@@ -18,7 +18,7 @@ This project is a refactor of the original BaseWars gamemode. Its goal is to pro
 ## What's changed
 
 * Replaced the old player data (tmysql/SQLite) in favor of [goobie-sql](https://github.com/Srlion/goobie-sql)
-* Switched to [Srlion's Hook Library](https://steamcommunity.com/sharedfiles/filedetails/?id=1907060869) and its hook priorities
+* Switched to [Srlion's Hook Library](https://steamcommunity.com/sharedfiles/filedetails/?id=1907060869)
 * Removed EasyLua
 * Removed the old qchat
 * Compatibility with newer addons ([see here](COMPATIBILITY.md))
@@ -29,7 +29,7 @@ This refactor is intended for a fresh database. Please do not try to import data
 ## Installation
 
 ### Prerequisites
-* A CPPI compliant prop-protection addon.
+* A CPPI compliant prop-protection addon. We recommend [gProtect](https://www.gmodstore.com/market/view/gprotect-prop-protection)
 * A fading door addon.
 * A MySQL database.
 * A [goobie-sql release](https://github.com/Srlion/goobie-sql/releases) compatible with your Garry's Mod branch.
