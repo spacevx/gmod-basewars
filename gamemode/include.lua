@@ -44,6 +44,7 @@ do
 	IncludeSV("integration/blogs/sv_blogs.lua")
 	IncludeSV("integration/bitminers/sv_bitminers.lua")
 	LoadFileCS("integration/bitminers/cl_bitminers.lua")
+	IncludeSV("integration/blues_double_or_nothing/sv_double_or_nothing.lua")
 	IncludeSV("integration/gprotect/sv_gprotect.lua")
 end
 
