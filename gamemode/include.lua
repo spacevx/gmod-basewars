@@ -39,9 +39,7 @@ do
 		IncludeCS("shared/customnick.lua")
 		IncludeCS("shared/hostnamefix.lua")
 	end
-	if ulib or ulx then
-		IncludeCS("integration/ulx/bw_admin_ulx.lua")
-	end
+	IncludeCS("integration/admin_menus.lua")
 end
 
 do

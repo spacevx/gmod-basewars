@@ -2,11 +2,11 @@ BaseWars.Commands = {
 	cmds = {},
 }
 
-if ulx or ulib then
-	BaseWars.Commands.Pattern = "[/|%.]"
-else
-	BaseWars.Commands.Pattern = "[!|/|%.]"
+function BaseWars.Commands.GetPattern()
+	return BaseWars.AdminMenus:HasActive() and "[/%.]" or "[!/%.]"
 end
+
+BaseWars.Commands.Pattern = BaseWars.Commands.GetPattern()
 
 --- @TODO: cleanier way for this
 local function FindPlayer(identifier)
@@ -105,9 +105,11 @@ function BaseWars.Commands.ConCommand(ply, cmd, args, line)
 end
 
 function BaseWars.Commands.SayCommand(ply, txt, team)
-	if not txt:sub(1, 1):find(BaseWars.Commands.Pattern) then return end
-	local cmd 	= txt:match(BaseWars.Commands.Pattern .. "(.-) ") or txt:match(BaseWars.Commands.Pattern .. "(.+)") or ""
-	local line 	= txt:match(BaseWars.Commands.Pattern .. ".- (.+)")
+	local pattern = BaseWars.Commands.GetPattern()
+	BaseWars.Commands.Pattern = pattern
+	if not txt:sub(1, 1):find(pattern) then return end
+	local cmd 	= txt:match(pattern .. "(.-) ") or txt:match(pattern .. "(.+)") or ""
+	local line 	= txt:match(pattern .. ".- (.+)")
 	cmd = cmd:lower()
 	if not cmd then return end
 	local TblCmd = BaseWars.Commands.cmds[cmd]

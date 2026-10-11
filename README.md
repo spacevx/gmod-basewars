@@ -21,6 +21,7 @@ This project is a refactor of the original BaseWars gamemode. Its goal is to pro
 * Switched to [Srlion's Hook Library](https://github.com/Srlion/Hook-Library) and its hook priorities
 * Removed EasyLua
 * Removed the old qchat
+* Compatibility with newer addons ([see here](COMPATIBILITY.md))
 * A lot of optimizations
 
 This refactor is intended for a fresh database. Please do not try to import data from your old BaseWars gamemode unless you know what you're doing.
