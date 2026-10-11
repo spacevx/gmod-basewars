@@ -1,7 +1,9 @@
 local tag = "BaseWars.Events"
+local Economy = MODULE.Class
+local economy = MODULE
 local PLAYER = debug.getregistry().Player
 
-function MODULE:PayDay(ply)
+function Economy:PayDay(ply)
 	if not ply then
 		for _, member in player.Iterator() do
 			member:PayDay()
@@ -29,6 +31,10 @@ function MODULE:PayDay(ply)
 		ply:GiveMoney(final)
 	end
 end
-PLAYER.PayDay = Curry(MODULE.PayDay)
+function PLAYER:PayDay()
+	economy:PayDay(self)
+end
 
-timer.Create(tag .. ".PayDay", BaseWars.Config.PayDayRate, 0, Curry(MODULE.PayDay))
+timer.Create(tag .. ".PayDay", BaseWars.Config.PayDayRate, 0, function()
+	economy:PayDay()
+end)

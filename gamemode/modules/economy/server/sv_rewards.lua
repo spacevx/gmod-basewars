@@ -1,4 +1,7 @@
-hook.Add("BaseWars_PlayerBuyEntity", "XPRewards", function(ply, ent)
+local Economy = MODULE.Class
+local economy = MODULE
+
+function Economy:RewardPurchase(ply, ent)
 	if ply:GetLevel() > 20 then return end
 	ent = BaseWars.Ents:Valid(ent)
 	if not ent then return end
@@ -12,9 +15,17 @@ hook.Add("BaseWars_PlayerBuyEntity", "XPRewards", function(ply, ent)
 	elseif class == "bw_printerpaper" then
 		ply:AddXP(25 * mult)
 	end
+end
+
+function Economy:RewardPrinter(ply, ent, money)
+	local mult = BaseWars.Config.XPMultiplier
+	ply:AddXP(math.max(0, (money / 500) * mult))
+end
+
+hook.Add("BaseWars_PlayerBuyEntity", "XPRewards", function(ply, ent)
+	economy:RewardPurchase(ply, ent)
 end)
 
 hook.Add("BaseWars_PlayerEmptyPrinter", "XPRewards", function(ply, ent, money)
-	local mult = BaseWars.Config.XPMultiplier
-	ply:AddXP(math.max(0, (money / 500) * mult))
+	economy:RewardPrinter(ply, ent, money)
 end)

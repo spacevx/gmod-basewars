@@ -1,27 +1,34 @@
 local tag = "BaseWars.PlayerLevel"
+local Economy = MODULE.Class
+local economy = MODULE
 local PLAYER = debug.getregistry().Player
 
-function MODULE:Init(ply)
+function Economy:InitLevel(ply)
 	BaseWars.MySQL.InitPlayer(ply, "xp", "0")
 	BaseWars.MySQL.InitPlayer(ply, "level", "1")
 end
-PLAYER.InitLevel = Curry(MODULE.Init)
-for k, v in next, player.GetAll() do
-	MODULE:Init(v)
+function PLAYER:InitLevel()
+	economy:InitLevel(self)
 end
-function MODULE:SaveLevel(ply, amount)
+for k, v in next, player.GetAll() do
+	economy:InitLevel(v)
+end
+function Economy:SaveLevel(ply, amount)
 	BaseWars.MySQL.SaveVar(ply, "level", amount or self:GetLevel(ply))
 end
-function MODULE:SaveXP(ply, amount)
+function Economy:SaveXP(ply, amount)
 	BaseWars.MySQL.SaveVar(ply, "xp", amount or self:GetXP(ply))
 end
-function MODULE:Save(ply)
+function Economy:SaveLevels(ply)
 	self:SaveLevel(ply)
 	self:SaveXP(ply)
 end
-PLAYER.SaveLevels = Curry(MODULE.Save)
-function MODULE:Load(ply)
-	self:Init(ply)
+function PLAYER:SaveLevels()
+	economy:SaveLevels(self)
+end
+
+function Economy:LoadLevels(ply)
+	self:InitLevel(ply)
 	BaseWars.MySQL.LoadVar(ply, "level", function(ply, var, val)
 		if not IsValid(ply) then return end
 		local val = tostring(val)
@@ -35,8 +42,11 @@ function MODULE:Load(ply)
 		ply.xp = val
 	end)
 end
-PLAYER.LoadLevels = Curry(MODULE.Load)
-function MODULE:CheckLevels(ply)
+function PLAYER:LoadLevels()
+	economy:LoadLevels(self)
+end
+
+function Economy:CheckLevels(ply)
 	local neededxp = ply:GetXPNextLevel()
 	if ply:GetXP() >= neededxp then
 		if ply:GetLevel() == BaseWars.Config.LevelSettings.MaxLevel then
@@ -48,7 +58,7 @@ function MODULE:CheckLevels(ply)
 		ply:SetXP( ply:GetXP() - neededxp)
 	end
 end
-function MODULE:Set(ply, amount)
+function Economy:SetLevel(ply, amount)
 	if not isnumber(amount) or amount < 0 then amount = 0 end
 	if amount > BaseWars.Config.LevelSettings.MaxLevel then amount = BaseWars.Config.LevelSettings.MaxLevel end
 	amount = math.Round(amount)
@@ -56,13 +66,19 @@ function MODULE:Set(ply, amount)
 	self:SaveLevel(ply, amount)
 	ply:SetNWString(tag .. ".Level", tostring(amount))
 end
-PLAYER.SetLevel = Curry(MODULE.Set)
-function MODULE:AddLevel(ply, amount)
+function PLAYER:SetLevel(amount)
+	economy:SetLevel(self, amount)
+end
+
+function Economy:AddLevel(ply, amount)
 	local Value = ply:GetLevel()
 	ply:SetLevel(Value + amount)
 end
-PLAYER.AddLevel = Curry(MODULE.AddLevel)
-function MODULE:SetXP(ply, amount)
+function PLAYER:AddLevel(amount)
+	economy:AddLevel(self, amount)
+end
+
+function Economy:SetXP(ply, amount)
 	if not isnumber(amount) or amount < 0 then amount = 0 end
 	amount = math.Round(amount)
 	ply.xp = amount
@@ -70,11 +86,21 @@ function MODULE:SetXP(ply, amount)
 	ply:SetNWString(tag .. ".XP", tostring(amount))
 	self:CheckLevels( ply )
 end
-PLAYER.SetXP = Curry(MODULE.SetXP)
-function MODULE:AddXP(ply, amount)
+function PLAYER:SetXP(amount)
+	economy:SetXP(self, amount)
+end
+
+function Economy:AddXP(ply, amount)
 	local Value = ply:GetXP()
 	ply:SetXP(Value + amount)
 end
-PLAYER.AddXP = Curry(MODULE.AddXP)
-hook.Add("LoadData", tag .. ".Load", Curry(MODULE.Load))
-hook.Add("PlayerDisconnected", tag .. ".Save", Curry(MODULE.Save))
+function PLAYER:AddXP(amount)
+	economy:AddXP(self, amount)
+end
+
+hook.Add("LoadData", tag .. ".Load", function(ply)
+	economy:LoadLevels(ply)
+end)
+hook.Add("PlayerDisconnected", tag .. ".Save", function(ply)
+	economy:SaveLevels(ply)
+end)

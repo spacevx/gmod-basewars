@@ -1,14 +1,24 @@
-g_VaultLookup = g_VaultLookup or {}
+local Economy = MODULE.Class
+local economy = MODULE
+economy.VaultLookup = economy.VaultLookup or {}
 
-hook.Add("BaseWars_PlayerCanBuyEntity", "money_vault", function(ply, class)
-	if class:match("bw_vault") and IsValid(g_VaultLookup[ply:SteamID64()]) then
+function Economy:CanBuyVault(ply, class)
+	if class:match("bw_vault") and IsValid(self.VaultLookup[ply:SteamID64()]) then
 		return false, "You already own a money vault."
 	end
+end
+
+function Economy:TrackVault(ply, ent)
+	if ent:GetClass():match("bw_vault") then
+		self.VaultLookup[ply:SteamID64()] = ent
+	end
+end
+
+hook.Add("BaseWars_PlayerCanBuyEntity", "money_vault", function(ply, class)
+	return economy:CanBuyVault(ply, class)
 end)
 
 hook.Add("BaseWars_PlayerBuyEntity", "money_vault", function(ply, ent)
-	if ent:GetClass():match("bw_vault") then
-		g_VaultLookup[ply:SteamID64()] = ent
-	end
+	economy:TrackVault(ply, ent)
 end)
 

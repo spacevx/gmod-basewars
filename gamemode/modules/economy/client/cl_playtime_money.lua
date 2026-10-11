@@ -1,11 +1,14 @@
 local tag = "BaseWars.PlayTime_Money"
+local economy = MODULE
+local Economy = MODULE.Class
 
-local TimeMat 	= Material("icon32/clock_wh32.png", "nocull noclamp smooth")
-local MoneyMat 	= Material("icon32/money_wh32.png", "nocull noclamp smooth")
+local HUD = {}
+HUD.__index = HUD
 
-local abs 		= math.abs
-local floor 	= math.floor
-local clamp 	= math.Clamp
+local white = Color(255, 255, 255, 150)
+local shade = Color(0, 0, 0, 140)
+local green = Color(42, 255, 0)
+local red = Color(255, 0, 0)
 
 surface.CreateFont(tag, {
 	font = "Roboto",
@@ -13,124 +16,105 @@ surface.CreateFont(tag, {
 	size = 24,
 })
 
-local function playTime(n)
-	local dat = n
+local function playTime(time)
 	local str = ""
-	if dat.h > 0 then
-		str = str .. dat.h .. BaseWars.LANG.HoursShort .. " "
-	end
-	if dat.m > 0 then
-		str = str .. dat.m ..  BaseWars.LANG.MinutesShort .. " "
-	end
-	if dat.s > 0 then
-		str = str .. dat.s  ..  BaseWars.LANG.SecondsShort .. " "
-	end
+	if time.h > 0 then str = str .. time.h .. BaseWars.LANG.HoursShort .. " " end
+	if time.m > 0 then str = str .. time.m .. BaseWars.LANG.MinutesShort .. " " end
+	if time.s > 0 then str = str .. time.s .. BaseWars.LANG.SecondsShort .. " " end
 	return #str > 0 and str or "0s"
 end
 
-local me = LocalPlayer()
-local white = Color(255, 255, 255, 150)
-local shade = Color(0, 0, 0, 140)
-
-local loss = false
-local old = 0
-local last = CurTime()
-local triggered
-
-local efx = {}
-local remove = table.remove
-
-local function addEffect(f)
-	efx[#efx + 1] = f
+function HUD.new()
+	return setmetatable({
+		player = LocalPlayer(),
+		timeMaterial = Material("icon32/clock_wh32.png", "nocull noclamp smooth"),
+		moneyMaterial = Material("icon32/money_wh32.png", "nocull noclamp smooth"),
+		previousMoney = 0,
+		lastChange = CurTime(),
+		loss = false,
+		effects = {},
+		materialRetry = true,
+	}, HUD)
 end
 
-local function popEffect(i)
-	remove(efx,i)
-end
-
-local function drawEffects()
-	for i = 1, #efx do
-		local f = efx[i]
-		if f then
-			f(i)
-		end
+function HUD:AddEffect(amount)
+	local endTime = self.lastChange
+	local color = amount < 0 and red or green
+	local x, y = 106, ScrH() - 73
+	local change = 4
+	self.effects[#self.effects + 1] = function()
+		local alpha = math.Clamp(endTime - CurTime(), 0, 1) * 150
+		if alpha <= 0.01 then return false end
+		change = change / 1.08
+		draw.DrawText(
+			(amount > 0 and "+ " or " ") .. BaseWars.LANG.CURRENCY .. BaseWars.NumberFormat(amount),
+			tag, x, y, ColorAlpha(color, alpha), TEXT_ALIGN_LEFT
+		)
+		y = y + change
+		return true
 	end
 end
 
-local green = Color(42, 255, 0)
-local red = Color(255, 0, 0)
-
-local TryAgain = true
-
-function MODULE:Paint()
-	local sW, sH = ScrW(), ScrH()
-	local cT = CurTime()
-	if not IsValid(me) then me = LocalPlayer() return end
-	local plTime = me.GetPlayTimeTable and me:GetPlayTimeTable() or {h = 0, m = 0, s = 0}
-	local money = me.GetMoney and me:GetMoney() or 0
-	local diff = 0
-	if money ~= old then
-		loss = money < old
-		triggered = true
-		last = cT + 1
-		diff = money - old
+function HUD:DrawEffects()
+	for i = #self.effects, 1, -1 do
+		if not self.effects[i]() then table.remove(self.effects, i) end
 	end
-	old = money
-	money = BaseWars.NumberFormat(money)
+end
+
+function HUD:RefreshMaterials()
+	if not self.materialRetry or (not self.timeMaterial:IsError() and not self.moneyMaterial:IsError()) then return end
+	self.timeMaterial = Material("icon32/clock_wh32.png", "nocull noclamp smooth")
+	self.moneyMaterial = Material("icon32/money_wh32.png", "nocull noclamp smooth")
+	self.materialRetry = false
+	timer.Simple(3, function()
+		self.materialRetry = true
+	end)
+end
+
+function HUD:Paint()
+	if not IsValid(self.player) then
+		self.player = LocalPlayer()
+		return
+	end
+
+	local height = ScrH()
+	local now = CurTime()
+	local time = self.player.GetPlayTimeTable and self.player:GetPlayTimeTable() or {h = 0, m = 0, s = 0}
+	local money = self.player.GetMoney and self.player:GetMoney() or 0
+	if money ~= self.previousMoney then
+		self.loss = money < self.previousMoney
+		self.lastChange = now + 1
+		self:AddEffect(money - self.previousMoney)
+	end
+	self.previousMoney = money
+
 	surface.SetDrawColor(0, 0, 0, 150)
-	surface.SetMaterial(TimeMat)
-	surface.DrawTexturedRect(66, sH - 110, 32, 32)
+	surface.SetMaterial(self.timeMaterial)
+	surface.DrawTexturedRect(66, height - 110, 32, 32)
 	surface.SetDrawColor(255, 255, 255, 150)
-	surface.SetMaterial(TimeMat)
-	surface.DrawTexturedRect(64, sH - 112, 32, 32)
-	draw.DrawText(playTime(plTime), tag, 64 + 44, sH - 112 + 6, shade, TEXT_ALIGN_LEFT)
-	draw.DrawText(playTime(plTime), tag, 64 + 42, sH - 112 + 4, white, TEXT_ALIGN_LEFT)
+	surface.DrawTexturedRect(64, height - 112, 32, 32)
+	draw.DrawText(playTime(time), tag, 108, height - 106, shade, TEXT_ALIGN_LEFT)
+	draw.DrawText(playTime(time), tag, 106, height - 108, white, TEXT_ALIGN_LEFT)
+
 	surface.SetDrawColor(0, 0, 0, 150)
-	surface.SetMaterial(MoneyMat)
-	surface.DrawTexturedRect(66, sH - 110 + 40, 32, 32)
+	surface.SetMaterial(self.moneyMaterial)
+	surface.DrawTexturedRect(66, height - 70, 32, 32)
 	surface.SetDrawColor(255, 255, 255, 150)
-	surface.SetMaterial(MoneyMat)
-	surface.DrawTexturedRect(64, sH - 112 + 40, 32, 32)
-	local moneyColor
-	if loss then
-		moneyColor = HSVToColor(0, 1 - clamp(cT - last, 0, 1), 1)
-	else
-		moneyColor = HSVToColor(110, 1 - clamp(cT - last, 0, 1), 1)
-	end
-	moneyColor = ColorAlpha(moneyColor,150)
-	local mon = string.format(BaseWars.LANG.CURFORMER, money)
-	draw.DrawText(mon, tag, 64 + 44, sH - 112 + 40 + 6, shade, TEXT_ALIGN_LEFT)
-	draw.DrawText(mon, tag, 64 + 42, sH - 112 + 40 + 4, moneyColor, TEXT_ALIGN_LEFT)
-	if triggered then
-		triggered = false
-		local fLast = last
-		local posX,posY = 64 + 42, sH - 128 + 51 + 4
-		local change = 4
-		local fDiff = diff
-		local function effectDraw(i)
-			local color = not loss and green or red
-			local cT = CurTime()
-			local alpha = clamp(fLast - cT,0,1) * 150
-			if abs(alpha) <= 0.01 then
-				popEffect(i)
-				return
-			end
-			color = ColorAlpha(color, alpha)
-			change = change / 1.08
-			draw.DrawText(
-				(fDiff > 0 and "+ " .. BaseWars.LANG.CURRENCY or " " .. BaseWars.LANG.CURRENCY) .. BaseWars.NumberFormat(fDiff), tag,
-				posX, posY, color, TEXT_ALIGN_LEFT
-			)
-			posY = posY + change
-		end
-		addEffect(effectDraw)
-	end
-	drawEffects()
-	if TimeMat:IsError() or MoneyMat:IsError() and TryAgain then
-		TimeMat 	= Material("icon32/clock_wh32.png", "nocull noclamp smooth")
-		MoneyMat 	= Material("icon32/money_wh32.png", "nocull noclamp smooth")
-		TryAgain = false
-		timer.Simple( 3, function() TryAgain = true end )
-	end
+	surface.DrawTexturedRect(64, height - 72, 32, 32)
+	local hue = self.loss and 0 or 110
+	local moneyColor = ColorAlpha(HSVToColor(hue, 1 - math.Clamp(now - self.lastChange, 0, 1), 1), 150)
+	local label = string.format(BaseWars.LANG.CURFORMER, BaseWars.NumberFormat(money))
+	draw.DrawText(label, tag, 108, height - 66, shade, TEXT_ALIGN_LEFT)
+	draw.DrawText(label, tag, 106, height - 68, moneyColor, TEXT_ALIGN_LEFT)
+	self:DrawEffects()
+	self:RefreshMaterials()
 end
-hook.Add("HUDPaint", tag .. ".Paint", Curry(MODULE.Paint))
+
+economy.HUD = HUD.new()
+function Economy:Paint()
+	return self.HUD:Paint()
+end
+
+hook.Add("HUDPaint", tag .. ".Paint", function()
+	economy:Paint()
+end)
