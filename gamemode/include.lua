@@ -41,6 +41,7 @@ do
 	end
 	IncludeCS("integration/admin_menus.lua")
 	IncludeCS("integration/mlogs/sh_mlogs.lua")
+	IncludeSV("integration/blogs/sv_blogs.lua")
 	IncludeSV("integration/gprotect/sv_gprotect.lua")
 end
 
