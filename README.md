@@ -18,7 +18,7 @@ This project is a refactor of the original BaseWars gamemode. Its goal is to pro
 ## What's changed
 
 * Replaced the old player data (tmysql/SQLite) in favor of [goobie-sql](https://github.com/Srlion/goobie-sql)
-* Switched to [Srlion's Hook Library](https://github.com/Srlion/Hook-Library) and its hook priorities
+* Switched to [Srlion's Hook Library](https://steamcommunity.com/sharedfiles/filedetails/?id=1907060869) and its hook priorities
 * Removed EasyLua
 * Removed the old qchat
 * Compatibility with newer addons ([see here](COMPATIBILITY.md))
