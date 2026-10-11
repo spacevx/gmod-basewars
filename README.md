@@ -17,7 +17,7 @@ This project is a refactor of the original BaseWars gamemode. Its goal is to pro
 
 ## What's changed
 
-* Replaced the old player data system with MySQL through [goobie-sql](https://github.com/Srlion/goobie-sql). tmysql4, SQLite, and file-based saves are no longer used.
+* Replaced the old player data (tmysql/SQLite) in favor of [goobie-sql](https://github.com/Srlion/goobie-sql)
 * Removed EasyLua
 * Removed the old qchat
 * A lot of optimizations
@@ -52,17 +52,7 @@ The default weapon configuration uses Customizable Weaponry 2.0. You can change 
 ![ScreenShot](http://puu.sh/mAOmT/370b971f4f.jpg)
 
 ## Authors
-
-### Hexahedronic
-
-  **Main Developer:** [Callum J. Slaney](mailto:q2f2@hexahedron.pw)
-
-  **Developer:** [Andrew Austin](mailto:ghosty.hexahedronic@gmail.com)
-
-  **Developer:** [Stepan Fedotov](mailto:admin@futuretechs.eu)
-
-  **Developer:** [Ling](mailto:ling@hexahedron.pw)
-
-### Others
-
-  Credited in the author field of the gamemode.
+**Main Developer:** [Callum J. Slaney](mailto:q2f2@hexahedron.pw)
+**Developer:** [Andrew Austin](mailto:ghosty.hexahedronic@gmail.com)
+**Developer:** [Stepan Fedotov](mailto:admin@futuretechs.eu)
+**Developer:** [Ling](mailto:ling@hexahedron.pw)

@@ -2,6 +2,7 @@ local BW = BaseWars
 
 local colorRed 		= Color(255, 0, 0)
 local colorBlue 	= Color(0, 0, 255)
+local colorGreen 	= Color(0, 255, 0)
 local colorWhite 	= Color(255, 255, 255)
 
 local function Log(...)
@@ -21,17 +22,24 @@ end
 
 local ModuleLoader = {}
 local fileFind = file.Find
-local next = next
 
-function ModuleLoader:IterateFiles(folder, realm)
+local function findEntries(folder)
 	local GMFolder = (GM or GAMEMODE).Folder or "basewars"
-	local files = fileFind(GMFolder:gsub("gamemodes/", "") .. "/gamemode/" .. folder .. "/*", realm or "LUA")
-	if #files == 0 then
-		files = fileFind(folder .. "/*", realm or "LUA")
+	local files, folders = fileFind(GMFolder:gsub("gamemodes/", "") .. "/gamemode/" .. folder .. "/*", "LUA")
+	if not files or (#files == 0 and (not folders or #folders == 0)) then
+		files, folders = fileFind(folder .. "/*", "LUA")
 	end
+	return files or {}, folders or {}
+end
+
+function ModuleLoader:IterateFiles(folder)
+	local files = findEntries(folder)
+	table.sort(files)
 	local newFiles = {}
-	for _, fileName in next, files do
-		newFiles[#newFiles + 1] = folder .. "/" .. fileName
+	for _, fileName in ipairs(files) do
+		if fileName:sub(-4) == ".lua" then
+			newFiles[#newFiles + 1] = folder .. "/" .. fileName
+		end
 	end
 	local i = 0
 	local function iter()
@@ -41,56 +49,74 @@ function ModuleLoader:IterateFiles(folder, realm)
 	return iter
 end
 
+function ModuleLoader:GetFolders(folder)
+	local _, folders = findEntries(folder)
+	table.sort(folders)
+	return folders
+end
+
 local getFn = string.GetFileFromFilename
 
 local function loadModule()
-	BW[MODULE.Name] = table.Copy(MODULE)
+	BW[MODULE.Name] = MODULE
 	if MODULE.__INIT then
 		BW[MODULE.Name]:__INIT()
 	end
 end
 
+local function includeModule(fName)
+	local ok, err = pcall(include, fName)
+	if not ok then
+		local name = MODULE.Name or getFn(fName)
+		Log("There was an error loading the module ", colorGreen, "\"", name, "\"", colorWhite, ".",
+			"The error is:\n", err)
+		return false
+	end
+	return true
+end
+
 function ModuleLoader:Load()
 	local oldTime = SysTime()
 	local moduleCount = 0
-	for fName in self:IterateFiles("modules") do
+	for _, moduleFolder in ipairs(self:GetFolders("modules")) do
 		MODULE = {}
+		local module = MODULE
 		function Curry(f)
-			local MODULE = MODULE
-			local function curriedFunction(...)
-				return f(MODULE, ...)
+			return function(...)
+				return f(module, ...)
 			end
-			return curriedFunction
 		end
-		local ok, err = pcall(include, fName)
-		if not ok then
-			local name = MODULE.Name or getFn(fName)
-			Log("There was an error loading the module ", colorGreen, "\"", name, "\"", colorWhite, ".",
-				"The error is:\n", err)
-			continue
+		local modulePath = "modules/" .. moduleFolder
+		local loaded = false
+		local failed = false
+		local function loadFiles(realm)
+			for fName in self:IterateFiles(modulePath .. "/" .. realm) do
+				if SERVER and realm == "shared" then
+					AddCSLuaFile(fName)
+				end
+				loaded = true
+				if not includeModule(fName) then
+					failed = true
+				end
+			end
 		end
-		if not MODULE.Name then
-			Log("Module with empty name: ", getFn(fName), ", ignoring.")
-			continue
-		end
-		local realm = MODULE.Realm
-		if realm == 2 then
-			if SERVER then
+		loadFiles("shared")
+		if SERVER then
+			loadFiles("server")
+			for fName in self:IterateFiles(modulePath .. "/client") do
 				AddCSLuaFile(fName)
+			end
+		else
+			loadFiles("client")
+		end
+		if loaded and not failed then
+			if MODULE.Name then
+				loadModule()
+				moduleCount = moduleCount + 1
 			else
-				loadModule()
+				Log("Module with empty name: ", moduleFolder, ", ignoring.")
 			end
-		elseif realm == 1 then
-			if SERVER then
-				loadModule()
-			end
-		elseif not realm or realm == 3 then
-			if SERVER then
-				AddCSLuaFile(fName)
-			end
-			loadModule()
 		end
-		moduleCount = moduleCount + 1
 	end
 	MODULE = nil
 	Curry = nil

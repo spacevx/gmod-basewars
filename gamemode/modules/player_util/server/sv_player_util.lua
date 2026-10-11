@@ -1,0 +1,99 @@
+local tag = "BaseWars.Util_Player"
+local PLAYER = debug.getregistry().Player
+local verbose = CreateConVar("basewars_notif_verbose", "0", FCVAR_ARCHIVE, "Spam the ever living shit out of the server console and EPOE with worthless notifications")
+
+util.AddNetworkString(tag)
+
+function MODULE:Notification(ply, text, col)
+	net.Start(tag)
+		net.WriteUInt(0, 1)
+		net.WriteString(text)
+		net.WriteColor(col)
+	if ply then net.Send(ply) else net.Broadcast() end
+	if verbose:GetBool() then
+		BaseWars.UTIL.Log(ply, " -> ", text)
+	end
+end
+local notification = Curry(MODULE.Notification)
+Notify = notification
+PLAYER.Notify = notification
+
+function MODULE:Spawn(ply) 
+	local col = ply:GetInfo("cl_playercolor")
+	ply:SetPlayerColor(Vector(col))
+	local col = Vector(ply:GetInfo("cl_weaponcolor"))
+	if col:Length() == 0 then
+		col = Vector(0.001, 0.001, 0.001)
+	end
+	ply:SetWeaponColor(col)
+end
+hook.Add("PlayerSpawn", tag .. ".Spawn", Curry(MODULE.Spawn))
+
+function MODULE:EnableFlashlight(ply)
+	ply:AllowFlashlight(true)
+end
+
+hook.Add("PlayerSpawn", tag .. ".EnableFlashlight", Curry(MODULE.EnableFlashlight))
+
+function MODULE:PlayerSetHandsModel(ply, ent)
+	local PlayerModel 	= player_manager.TranslateToPlayerModelName(ply:GetModel())
+	local HandsInfo 	= player_manager.TranslatePlayerHands(PlayerModel)
+	if HandsInfo then
+		ent:SetModel(HandsInfo.model)
+		ent:SetSkin(HandsInfo.skin)
+		ent:SetBodyGroups(HandsInfo.body)
+	end
+end
+hook.Add("PlayerSetHandsModel", tag .. ".PlayerSetHandsModel", Curry(MODULE.PlayerSetHandsModel))
+
+local function FindPassableSpace(ply, direction, step)
+	local OldPos = ply:GetPos()
+	local Origin = ply:GetPos()
+	for i = 1, 11 do
+		Origin = Origin + (step * direction)
+		if not ply:Stuck(Origin) then return true, Origin end
+	end
+	return false, OldPos
+end
+
+function MODULE:UnStuck(ply, ang, scale)
+	local NewPos = ply:GetPos()
+	local OldPos = NewPos
+	if not ply:Stuck() then return end
+	local Ang = ang or ply:GetAngles()
+	local Forward 	= Ang:Forward()
+	local Right 	= Ang:Right()
+	local Up 		= Ang:Up()
+	local SearchScale = scale or 3
+	local Found
+	Found, NewPos = FindPassableSpace(ply, Forward, -SearchScale)
+	if not Found then
+		Found, NewPos = FindPassableSpace(ply, Right, SearchScale)
+		if not Found then
+			Found, NewPos = FindPassableSpace(ply, Right, -SearchScale)
+			if not Found then
+				Found, NewPos = FindPassableSpace(ply, Up, -SearchScale)
+				if not Found then
+					Found, NewPos = FindPassableSpace(ply, Up, SearchScale)
+					if not Found then
+						Found, NewPos = FindPassableSpace(ply, Forward, SearchScale)
+						if not Found then
+							return false	
+						end
+					end
+				end
+			end
+		end
+	end
+	if OldPos == NewPos then
+		return false
+	else
+		if verbose:GetBool() then
+			local HitString = math.floor(NewPos.x) .. "," .. math.floor(NewPos.y) .. "," .. math.floor(NewPos.z)
+			BaseWars.UTIL.Log("USTK EVENT: ", ply, " -> [", HitString, "]")
+		end
+		ply:SetPos(NewPos)
+		return true
+	end
+end
+PLAYER.BW_UnStuck = Curry(MODULE.UnStuck)
