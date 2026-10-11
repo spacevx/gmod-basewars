@@ -29,13 +29,11 @@ function ENT:doTrace(i)
 	trace_data.start  = self:LocalToWorld(self.charge_points[i])
 	trace_data.endpos = trace_data.start + self:LocalToWorldAngles(self.charge_ang):Forward() * 512
 	trace_data.filter = self
-
 	util.TraceLine(trace_data)
 end
 
 function ENT:Draw()
 	self:DrawModel()
-
 	render.SetMaterial(beam_mat)
 	for i = 1, #self.charge_points do
 		self:doTrace(i)
@@ -53,7 +51,6 @@ end
 function ENT:ThinkFunc()
 	for i = 1, #self.charge_points do
 		self:doTrace(i)
-
 		local ent = trace_result.Entity
 		if IsValid(ent) and ent:GetClass() == "bw_weapon_assembler" then
 			ent:AddPrechargeLevel(1)

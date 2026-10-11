@@ -26,13 +26,11 @@ function ENT:doTrace(i)
 	trace_data.start  = self:LocalToWorld(self.charge_points[i])
 	trace_data.endpos = trace_data.start + self:LocalToWorldAngles(self.charge_ang):Forward() * 512
 	trace_data.filter = self
-
 	util.TraceLine(trace_data)
 end
 
 function ENT:Draw()
 	self:DrawModel()
-
 	render.SetMaterial(beam_mat)
 	for i = 1, #self.charge_points do
 		self:doTrace(i)
@@ -49,15 +47,12 @@ end
 
 function ENT:ThinkFunc()
 	if self.next_create and self.next_create > CurTime() then return end
-
 	for i = 1, #self.charge_points do
 		self:doTrace(i)
-
 		local ent = trace_result.Entity
 		if IsValid(ent) and ent:GetClass() == "bw_weapon_assembler" then
 			local chance = math.random()
 			self:EmitSound("weapons/mortar/mortar_fire1.wav")
-
 			if chance > 0.94 then
 				ent:AddLegendaryComponentCount(1)
 				self:EmitSound("weapons/Irifle/irifle_fire2.wav")
@@ -70,6 +65,5 @@ function ENT:ThinkFunc()
 			end
 		end
 	end
-
 	self.next_create = CurTime() + math.random(60, 200)
 end

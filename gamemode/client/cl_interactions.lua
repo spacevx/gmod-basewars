@@ -42,50 +42,36 @@ function LookEnt:Paint()
 	local aimEnt = me:GetEyeTrace().Entity
 	if not BaseWars.Ents:Valid(aimEnt) then return end
 	if aimEnt:GetClass() == "worldspawn" then return end
-
 	local tbl = LookEnt.Ents[aimEnt:GetClass()] or (aimEnt.Base and LookEnt.Ents[aimEnt.Base] or nil)
 	if not tbl then return end
-
 	if not tbl.cansee(aimEnt) then return end
-
 	if aimEnt:GetPos():Distance(me:GetPos()) > LookEnt.Dist then return end
-
 	local key = tbl.key
 	local action, name = tbl.action(aimEnt)
 	local actionCol, nameCol = tbl.color(aimEnt)
-
 	local sW = ScrW()
 	local sH = ScrH()
-
 	surface.SetFont("LookEnt.Key")
 	local keyW, keyH = surface.GetTextSize(key)
-
 	surface.SetFont("LookEnt.Text")
 	local actionW, actionH = surface.GetTextSize(action)
 	local nameW, nameH = surface.GetTextSize(name)
-
 	local wholeW = actionW + nameW + 6
-
 	local keySize = 40
-
 	surface.SetMaterial(LookEnt.Key)
 	surface.SetDrawColor(Color(255, 255, 225))
 	surface.DrawTexturedRect(sW / 2 - keySize - wholeW/2 - 12, sH / 2 + 32, keySize, keySize)
-
 	surface.SetFont("LookEnt.Key")
 	surface.SetTextColor(Color(0, 0, 0, 255))
 	surface.SetTextPos(sW / 2 - keySize / 2 - wholeW/2 - 12 - keyW / 2, sH / 2 + 32 + keyH / 2 - 7)
 	surface.DrawText(key)
-
 	surface.SetFont("LookEnt.Text")
-
 	surface.SetTextColor(Color(0, 0, 0, 127))
 	surface.SetTextPos(sW / 2 - keySize / 2 - wholeW/2 + 18 + 2, sH / 2 + 32 + keyH / 2 - 5 + 2)
 	surface.DrawText(action)
 	surface.SetTextColor(actionCol)
 	surface.SetTextPos(sW / 2 - keySize / 2 - wholeW/2 + 18, sH / 2 + 32 + keyH / 2 - 5)
 	surface.DrawText(action)
-
 	surface.SetTextColor(Color(0, 0, 0, 127))
 	surface.SetTextPos(sW / 2 - keySize / 2 - wholeW/2 + 18 + 6 + actionW + 2, sH / 2 + 32 + keyH / 2 - 5 + 2)
 	surface.DrawText(name)

@@ -15,23 +15,18 @@ if SERVER then
 	function ENTITY:CPPISetOwner(ply)
 		return CPPI.CPPI_NOTIMPLEMENTED
 	end
-
 	function ENTITY:CPPISetOwnerUID(uid)
 		return CPPI.CPPI_NOTIMPLEMENTED
 	end
-
 	function ENTITY:CPPICanTool(ply, tool)
 		return CPPI.CPPI_NOTIMPLEMENTED
 	end
-
 	function ENTITY:CPPICanPhysgun(ply)
 		return CPPI.CPPI_NOTIMPLEMENTED
 	end
-
 	function ENTITY:CPPICanPickup(ply)
 		return CPPI.CPPI_NOTIMPLEMENTED
 	end
-
 	function ENTITY:CPPICanPunt(ply)
 		return CPPI.CPPI_NOTIMPLEMENTED
 	end

@@ -94,7 +94,6 @@ function Chat:PerformLayout()
 		if mk.h then
 			y = y - mk.h
 		end
-
 		mk.y = y
 	end
 end
@@ -127,7 +126,6 @@ local function DrawChat()
 	local ang = Angle()
 	ang:Set(eyeang)
 	ang:RotateAroundAxis(eyeang:Right(), -90)
-
 	mtrx:SetTranslation(Vector(Chat.x, 0, 0))
 	cam.PushModelMatrix(mtrx)
 		local ok, why = pcall(Chat.Draw, Chat)
@@ -157,10 +155,8 @@ function chat.AddText(...)
 	mk:StartLife(10)
 	mk:AddFont("chathud_18")
 	mk:AddShadow(1)
-
 	local ply = chatexp.LastPlayer
 	chatexp.LastPlayer = nil
-
 	for i = 1, select("#", ...) do
 		local gay = select(i, ...)
 		if isstring(gay) then

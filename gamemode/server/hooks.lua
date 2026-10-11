@@ -1,12 +1,9 @@
 hook.Add("BaseWars_PlayerBuyEntity", "XPRewards", function(ply, ent)
 	if ply:GetLevel() > 20 then return end
-
 	local ent = BaseWars.Ents:Valid(ent)
 	if not ent then return end
-
 	local mult = BaseWars.Config.XPMultiplier
 	local class = ent:GetClass()
-
 	if class:match("bw_printer_") or class == "bw_base_moneyprinter" then
 		local lvl = (ent.CurrentValue or 1000) / 1000
 		ply:AddXP(55 * lvl * mult)
@@ -45,7 +42,6 @@ if aowl then
 			return false, "Less than 3 hours of playtime."
 		end
 	end)
-
 	hook.Add("BaseWars_PlayerCanEmptyPrinter", "stop_breaking_the_economy", function(ply, ent, amt)
 		if ply ~= ent:CPPIGetOwner() --[[and amt > (ply:GetMoney() / 8)]] then
 			return false

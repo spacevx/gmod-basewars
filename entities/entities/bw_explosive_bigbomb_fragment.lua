@@ -10,7 +10,6 @@ ENT.Models = {"models/props_c17/oildrumchunk01a.mdl", "models/props_c17/oildrumc
 
 function ENT:Init()
 	self:SetModel(table.Random(self.Models))
-
 	util.SpriteTrail(self, 0, Color(255, 255, 255), false, 16, 0, 3, 0.03125, "trails/smoke.vmt")
 end
 

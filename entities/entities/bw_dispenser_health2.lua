@@ -15,8 +15,6 @@ ENT.HealthAmt           = 25
 function ENT:Init()
 	self:SetModel(self.Model)
 	self:SetHealth(5000)
-
 	self:SetUseType(CONTINUOUS_USE)
-
 	self:SetColor(Color(100, 100 ,255))
 end

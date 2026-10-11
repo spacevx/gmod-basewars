@@ -11,18 +11,15 @@ ENT.AlwaysRaidable = true
 
 if SERVER then
 	AddCSLuaFile()
-
 	function ENT:SetMinimap(ply, bool)
 		ply:SetNW2Bool("BaseWars_HasRadar", bool)
 	end
-
 	function ENT:ThinkFuncBypass()
 		local Owner = BaseWars.Ents:ValidOwner(self)
 		if Owner then
 			self:SetMinimap(Owner, self:IsPowered())
 		end
 	end
-
 	function ENT:OnRemove()
 		local Owner = BaseWars.Ents:ValidOwner(self)
 		if Owner then

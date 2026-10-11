@@ -50,7 +50,6 @@ function storage.Connect(callback)
 	if callback then pending[#pending + 1] = function() callback() end end
 	if connecting then return end
 	connecting = true
-
 	if not goobie then
 		local ok, lib = pcall(include, "server/thirdparty/goobie-sql.lua")
 		if not ok or not lib or not lib.NewConn then
@@ -59,12 +58,10 @@ function storage.Connect(callback)
 		end
 		goobie = lib
 	end
-
 	if storage.User == "" or storage.Database == "" then
 		connecting = false
 		error("Configure BaseWars.MySQL.User and Database in gamemode/server/mysql.lua")
 	end
-
 	storage.DbObj = goobie.NewConn({
 		driver = "mysql",
 		host = storage.Host,
@@ -81,7 +78,6 @@ function storage.Connect(callback)
 			fail("connect", err)
 			return
 		end
-
 		storage.DbObj:Run([[
 			CREATE TABLE IF NOT EXISTS basewars (
 				sid64 VARCHAR(20) CHARACTER SET ascii COLLATE ascii_bin NOT NULL PRIMARY KEY,

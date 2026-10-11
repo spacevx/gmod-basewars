@@ -51,39 +51,29 @@ end
 
 function SWEP:PrimaryAttack()
 	if not BaseWars.Raid:IsOnGoing() or (self.Owner and not self.Owner:InRaid()) then return false end
-
 	local tr = util.TraceLine({
 		start = self.Owner:GetShootPos(),
 		endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.Range,
 		filter = self.Owner
 	})
-
 	local ent = tr.Entity
 	if not IsValid(ent) or ent:GetClass() ~= "prop_physics" then return end
-
 	local Attacker = self.Owner
 	local Owner = BaseWars.Ents:ValidOwner(ent)
 	if not IsValid(Attacker) or not IsValid(Owner) then return end
-
 	local RaidLogic 	= (Attacker == Owner and Owner:InRaid()) or (Owner:InFaction() and (not Attacker == Owner and Attacker.InFaction and Attacker:InFaction(Owner:GetFaction())))
 	local RaidLogic2 	= Attacker ~= Owner and (not Owner:InRaid() or not (Attacker.InRaid and Attacker:InRaid()))
-
 	if not Attacker:InRaid() or (RaidLogic or RaidLogic2) then return false end
-
 	self:ShootEffects()
 	if SERVER and IsFirstTimePredicted() then
 		ent:SetHealth(ent:Health() - self.Primary.Damage)
-
 		if ent:Health() < 1 then
 			ent:Remove()
 		end
-
 		local c = (ent:Health() / ent:GetMaxHealth()) * 255
 		ent:SetColor(Color(c, c, c, 255))
-
 		self.Owner:EmitSound(table.Random(self.Sounds), 60)
 	end
-
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 end
 
@@ -103,20 +93,15 @@ function SWEP:DrawHUD()
 		endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.Range,
 		filter = self.Owner
 	})
-
 	local ent = tr.Entity
 	if not IsValid(ent) or ent:GetClass() ~= "prop_physics" then return end
-
 	local Pos = ent:GetPos()
 	Pos.z = Pos.z + 14
-
 	Pos = Pos:ToScreen()
-
 	local model = ent:GetModel()
 	local name = model:gsub(".+/", ""):gsub("%.mdl", ""):Trim()
 	local W = BaseWars.Config.HUD.EntW
 	local H = BaseWars.Config.HUD.EntH
-
 	local oldx, oldy = Pos.x, Pos.y
 	local curx, cury = Pos.x, Pos.y
 	local w, h
@@ -124,35 +109,24 @@ function SWEP:DrawHUD()
 	local Font2 = BaseWars.Config.HUD.EntFont2
 	local Padding = 5
 	local EndPad = -Padding * 2
-
 	curx = curx - W / 2
 	cury = cury - H / 2
-
 	surface.SetDrawColor(shade)
 	surface.DrawRect(curx, cury, W, H)
-
 	surface.SetFont(Font)
 	w, h = surface.GetTextSize(name)
-
 	draw.DrawText(name, Font, oldx - w / 2, cury, shade)
 	draw.DrawText(name, Font, oldx - w / 2, cury, textc)
-
 	if ent:Health() > 0 then
 		cury = cury + H + 1
-
 		surface.SetDrawColor(shade)
 		surface.DrawRect(curx, cury, W, H)
-
 		local MaxHealth = ent:GetMaxHealth() or 100
 		local HealthStr = ent:Health() .. "/" .. MaxHealth .. " HP"
-
 		local HPLen = W * (ent:Health() / MaxHealth)
-
 		draw.RoundedBox(0, curx + Padding, cury + Padding, HPLen + EndPad, H + EndPad, hpbck)
-
 		surface.SetFont(Font2)
 		w, h = surface.GetTextSize(HealthStr)
-
 		draw.DrawText(HealthStr, Font2, oldx - w / 2, cury + Padding, shade)
 		draw.DrawText(HealthStr, Font2, oldx - w / 2, cury + Padding, color_white)
 	end

@@ -15,7 +15,6 @@ ENT.ShockAmt = 200
 function ENT:Trigger()
 	self.Triggered = true
 	self:EmitSound(self.TriggerSound)
-
 	timer.Simple(self.TriggerDelay, function()
 		if IsValid(self) then
 			for k, v in ipairs(ents.FindInSphere(self:GetPos(), self.ShockRange)) do
@@ -23,7 +22,6 @@ function ENT:Trigger()
 					v:ApplyDrug("Stun", self.ShockAmt * (self.ShockRange / self:GetPos():Distance(v:GetPos())))
 				end
 			end
-
 			self:Explode()
 		end
 	end)

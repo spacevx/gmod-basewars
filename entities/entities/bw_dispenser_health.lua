@@ -15,7 +15,6 @@ ENT.HealthAmt           = 10
 function ENT:Init()
 	self:SetModel(self.Model)
 	self:SetHealth(500)
-
 	self:SetUseType(CONTINUOUS_USE)
 end
 
@@ -25,14 +24,10 @@ end
 
 function ENT:UseFunc(ply)
 	if not BaseWars.Ents:ValidPlayer(ply) then return end
-
 	self.Time = CurTime()
-
 	local Health = ply:Health()
 	if Health >= self.MaxHealth then return end
-
 	ply:SetHealth(Health + self.HealthAmt)
 	self:EmitSound(self.Sound, 100, 60)
-
 	if ply:Health() > self.MaxHealth then ply:SetHealth(self.MaxHealth) end
 end

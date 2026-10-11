@@ -34,45 +34,32 @@ end
 
 function ENT:Initialize()
 	self:SetModel(self.Model)
-
 	self:PhysicsInit(SOLID_BBOX)
 	self:SetSolid(SOLID_BBOX)
 	self:SetMoveType(MOVETYPE_NONE)
 	self:SetUseType(SIMPLE_USE)
-
 	self.IDLESequence = 17--self:LookupSequence("idle_angry")
-
 	self:Activate()
-
 	timer.Simple(0, function() if IsValid(self) then self:FixPosition() end end)
 end
 
 function ENT:FixPosition()
 	self:SetPos(self:GetPos() + self.Offset2)
-
 	self:DropToFloor()
 	self:SetPos(self:GetPos() + self.Offset)
-
 	local Ang = self:GetAngles()
 	Ang.r = 0
 	Ang.p = 0
-
 	self:SetAngles(Ang)
-
 	local Phys = self:GetPhysicsObject()
-
 	if BaseWars.Ents:Valid(Phys) then Phys:Sleep() end
-
 	self:Activate()
 end
 
 function ENT:Think()
 	if not self.IDLESequence then return end
-
 	self:SetSequence(self.IDLESequence)
-
 	local Time = CurTime() + self:SequenceDuration(self.IDLESequence)
 	self:NextThink(Time)
-
 	return true
 end

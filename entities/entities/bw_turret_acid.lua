@@ -4,7 +4,6 @@ ENT.Base = "bw_turret_healer"
 ENT.Type = "anim"
 DEFINE_BASECLASS(ENT.Base)
 
-
 ENT.PrintName    = "Acid Tower"
 ENT.Model        = "models/props_c17/utilityconnecter006c.mdl"
 ENT.Material     = "phoenix_storms/wire/pcb_green"
@@ -18,10 +17,8 @@ ENT.PoisonDuration  = 13
 
 function ENT:customTest(v)
 	if not v:IsPlayer() then return false end
-
 	local owner = self:CPPIGetOwner()
 	if (owner:IsPlayer() and owner:IsEnemy(v)) then return true end
-
 	return false
 end
 

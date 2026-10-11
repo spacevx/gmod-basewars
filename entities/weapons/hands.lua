@@ -33,7 +33,6 @@ SWEP._firstrun = false
 local function Lockable(ply, ent)
 	local eyes = ply:EyePos()
 	local class = ent:GetClass()
-
 	return IsValid(ent) and eyes:Distance(ent:GetPos()) < 65 and class:find("door")
 end
 
@@ -41,7 +40,6 @@ function SWEP:DrawWeaponSelection(x,y,w,h,a)
 	y = y + 10
 	x = x + 10
 	w = w - 20
-
 	draw.DrawText("C","CreditsLogo",x+w/2,y,Color(255,220,0,a),TEXT_ALIGN_CENTER)
 end
 
@@ -64,15 +62,11 @@ end
 function SWEP:PrimaryAttack()
 	local ply = self:GetOwner()
 	local trace = ply:GetEyeTrace()
-
 	local Ent = trace.Entity
 	if not Ent or not Ent:IsValid() or not Lockable(ply, Ent) then return end
-
 	self:SetNextPrimaryFire(CurTime() + 1)
 	self:SetNextSecondaryFire(CurTime() + 1)
-
 	if CLIENT then return end
-
 	Ent:Fire("lock")
 	ply:EmitSound("npc/metropolice/gear" .. math.random(1,6) .. ".wav")
 end
@@ -80,15 +74,11 @@ end
 function SWEP:SecondaryAttack()
 	local ply = self:GetOwner()
     local trace = ply:GetEyeTrace()
-
 	local Ent = trace.Entity
    if not Ent or not Ent:IsValid() or not Lockable(ply, Ent) then return end
-
     self:SetNextPrimaryFire(CurTime() + 1)
 	self:SetNextSecondaryFire(CurTime() + 1)
-
     if CLIENT then return end
-
     Ent:Fire("unlock")
 	ply:EmitSound("npc/metropolice/gear" .. math.random(1,6) .. ".wav")
 end

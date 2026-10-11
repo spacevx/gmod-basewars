@@ -64,18 +64,13 @@ local function makecharinfo(buffer, text)
 	local x, y, w = buffer.x or 0, 0, buffer.w or math.huge
 	local font = buffer.font
 	surface.SetFontFallback(font)
-
 	local cword = 1
 	local charinfo = {}
-
 	local tabwidth = surface.GetTextSize("     ")
 	local _,newline = surface.GetTextSize("\n")
 	newline = newline / 2
-
 	local skip
-
 	local bigY, bigH = 0, 0
-
 	for i, char in pairs(chars) do
 		if skip then skip = nil continue end
 		local _newline = newline
@@ -110,13 +105,10 @@ local function makecharinfo(buffer, text)
 			charinfo[#charinfo + 1] = {"\n", x, y, 0, _newline}
 		continue end
 		charinfo[#charinfo + 1] = {char, x, y, cw, ch}
-
 		x = x + cw
-
 		if x > w then
 			x, y = 0, y + _newline
 		end
-
 		if ch + y > bigH then
 			bigH = ch + y
 		end
@@ -164,12 +156,9 @@ function Text:Draw(markup, buffer, data)
 		charinfo = self.charinfo
 	end
 	if not self.charinfo then return end
-
 	local font, color = buffer.font, buffer.fgColor
-
 	local isnewword, start = true
 	local wordCount = 1
-
 	local y = buffer.y
 	for _, ch in pairs(charinfo) do
 		local char, cx, cy, cw, ch = ch[1], ch[2], ch[3], ch[4], ch[5]
@@ -277,7 +266,6 @@ function Shadow:ChangeBuffer(markup, buffer, data)
 end
 
 function Shadow:TagEnd()
-
 end
 
 local Image = table.Copy(Base)
@@ -409,11 +397,9 @@ function Markup:Init()
 	self.y = 0
 	self.w = math.huge
 	self.h = 0
-
 	self.bgColor = Color(0, 0, 0, 0)
 	self.fgColor = Color(255, 255, 255, 255) -- may be deprecated
 	self.alpha = 255
-
 	self.chunks = {}
 	self.hooks = {}
 end
@@ -514,7 +500,6 @@ function Markup:Parse(string)
 			return ChatHUD.shortcuts[str]
 		end
 	end)
-
 	local cur = ""
 	local inTag
 	local inShortcut

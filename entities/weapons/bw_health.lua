@@ -51,19 +51,15 @@ end
 
 function SWEP:PrimaryAttack()
 	if not IsFirstTimePredicted() then return end
-
 	local tr = util.TraceLine({
 		start = self.Owner:GetShootPos(),
 		endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * self.Range,
 		filter = self.Owner
 	})
-
 	local ent = tr.Entity
-	
 	if IsValid(ent) and ent.GetMaxHealth and ent:GetMaxHealth() > 1 then
 		if ent:Health() >= ent:GetMaxHealth() then return end
 		local Armor = ent.Armor and ent:Armor()
-
 		local bullet = {}
 			bullet.Num = self.Primary.NumberofShots
 			bullet.Src = self.Owner:GetShootPos()
@@ -74,17 +70,13 @@ function SWEP:PrimaryAttack()
 			bullet.Force = self.Primary.Force
 			bullet.Damage = self.Primary.Damage
 			bullet.AmmoType = self.Primary.Ammo
-
 		self.Owner:FireBullets(bullet)
-
 		if SERVER then
 			ent:SetHealth(math.min(ent:GetMaxHealth(), ent:Health() + self.HealAmount))
 			if Armor then ent:SetArmor(Armor) end
-			
 			self.Owner:EmitSound(self.Sound, 50, math.min(ent:Health() / ent:GetMaxHealth() * 100, 255))
 		end
 	end
-	
 	self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 end
 
