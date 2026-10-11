@@ -51,7 +51,7 @@ BaseWars.Config = {
 	ScaleVIPPayDay = true,
 	-- VIPRanks: Table of ranks which VIP items and ScaleVIPPayDay, etc applies to
 	VIPRanks = {
-		"donators",
+		["donators"] = true,
 	},
 
 	-- MaximumPay: Maximum amount players can give eachother, helps stop inflation

@@ -19,8 +19,7 @@ local BaseWars_Config = {
 	SteamGroup 	= "",
 	Workshop    = "",
 	ScaleVIPPayDay = true,
-	VIPRanks = {
-	},
+	VIPRanks = {},
 	MaximumPay = 10^4,
 	BountyDelimiter = 2,
 	PricesSize = 11,

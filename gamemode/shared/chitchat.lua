@@ -84,7 +84,7 @@ do
 				tbl[#tbl + 1] = "] "
 			end
 
-			if table.HasValue(BaseWars.Config.VIPRanks, ugroup) then
+			if BaseWars.Config.VIPRanks[ugroup] then
 				tbl[#tbl + 1] = gray
 				tbl[#tbl + 1] = "["
 				tbl[#tbl + 1] = green

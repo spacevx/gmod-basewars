@@ -76,7 +76,7 @@ if SERVER then
 		local gun, drug, ammo, ignore_raid, always_raid, force_model, health = i.Gun, i.Drug, i.Ammo, i.IgnoreRaid, i.AlwaysRaidable, i.ForceModel, i.Health
 
 		local vip = i.VIP
-		local HasVIP = not vip or (table.HasValue(BaseWars.Config.VIPRanks, ply:GetUserGroup()) or ply:IsAdmin())
+		local HasVIP = not vip or (BaseWars.Config.VIPRanks[ply:GetUserGroup()] or ply:IsAdmin())
 
 		local level = i.Level
 		if gun and (not level or level < BaseWars.Config.LevelSettings.BuyWeapons) then level = BaseWars.Config.LevelSettings.BuyWeapons end
@@ -454,7 +454,7 @@ local function MakeTab(type)
 					function icon:DoClick()
 						local ply = LocalPlayer()
 						local HasLevel = not level or ply:HasLevel(level)
-						local HasVIP = not vip or (table.HasValue(BaseWars.Config.VIPRanks, ply:GetUserGroup()) or ply:IsAdmin())
+						local HasVIP = not vip or (BaseWars.Config.VIPRanks[ply:GetUserGroup()] or ply:IsAdmin())
 						if (not HasLevel or not HasVIP) and (not ply.InDev or not ply:InDev()) then
 							surface.PlaySound("buttons/button10.wav")
 						return end
@@ -489,7 +489,7 @@ local function MakeTab(type)
 
 						local myMoney = LocalPlayer():GetMoney()
 						local HasLevel = not level or LocalPlayer():HasLevel(level)
-						local HasVIP = not vip or (table.HasValue(BaseWars.Config.VIPRanks, LocalPlayer():GetUserGroup()) or LocalPlayer():IsAdmin())
+						local HasVIP = not vip or (BaseWars.Config.VIPRanks[LocalPlayer():GetUserGroup()] or LocalPlayer():IsAdmin())
 
 						local DrawCol = green
 
@@ -515,7 +515,7 @@ local function MakeTab(type)
 
 						local text
 
-						local HasVIP = not vip or (table.HasValue(BaseWars.Config.VIPRanks, LocalPlayer():GetUserGroup()) or LocalPlayer():IsAdmin())
+						local HasVIP = not vip or (BaseWars.Config.VIPRanks[LocalPlayer():GetUserGroup()] or LocalPlayer():IsAdmin())
 						if not HasVIP then
 							text = "VIP ONLY"
 

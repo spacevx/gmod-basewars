@@ -27,7 +27,7 @@ if SERVER then
 
 		local Final 		= math.max(BaseWars.Config.PayDayMin, BaseRate - Thousands + math.random(-BaseWars.Config.PayDayRandom, BaseWars.Config.PayDayRandom))
 
-		local donator = BaseWars.Config.ScaleVIPPayDay and table.HasValue(BaseWars.Config.VIPRanks, ply:GetUserGroup())
+		local donator = BaseWars.Config.ScaleVIPPayDay and BaseWars.Config.VIPRanks[ply:GetUserGroup()]
 		if donator then Final = math.max(math.floor(ply:GetMoney() * 0.002), Final) end
 		Final = hook.Run("BW_PayDay", ply, Final) or Final
 
