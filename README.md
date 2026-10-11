@@ -1,6 +1,8 @@
 # BaseWars
 BaseWars is a gamemode all about printing and raiding. Build your own base to print tons of money while fighting off enemies trying to raid you!
 
+This project is a refactor of the original BaseWars gamemode. Its goal is to provide cleaner, better optimized code that uses modern Garry's Mod and GLua APIs and takes advantage of their newer features, while staying compatible with current addons and preserving the original gameplay.
+
 ## Features
 
 * Easy to setup!
@@ -13,25 +15,30 @@ BaseWars is a gamemode all about printing and raiding. Build your own base to pr
 * Built-in textscreens!
 * Custom language support!
 * Easy to use entity bases!
-* Developer support!
 
+## What's changed
+
+* Replaced the old player data system with MySQL through [goobie-sql](https://github.com/Srlion/goobie-sql). tmysql4, SQLite, and file-based saves are no longer used.
+* Removed EasyLua
+* A lot of optimizations
+
+This refactor is intended for a fresh database. Please do not try to import data from your old BaseWars gamemode unless you know what you're doing.
 
 ## Installation
 
 ### Prerequisites
 * A CPPI compliant prop-protection addon.
 * A fading door addon.
-* [Goobie-sql](https://github.com/Srlion/goobie-sql).
+* A MySQL database.
+* A [goobie-sql release](https://github.com/Srlion/goobie-sql/releases) compatible with your Garry's Mod branch.
 
 ### Installing the gamemode
 * Drag the folder into ```garrysmod/gamemodes```.
 * Edit ```garrysmod/gamemodes/basewars/gamemode/config.lua``` to your own liking.
-* Download `goobie-sql.lua` from the [goobie-sql releases](https://github.com/Srlion/goobie-sql/releases) into `gamemode/server/thirdparty/goobie-sql.lua`. Install its matching `gmsv_goobie_mysql` binary in `garrysmod/lua/bin`.
-* Set the host, port, user, password and database in `gamemode/server/mysql.lua`. The database must already exist; BaseWars creates its own tables. Use an account with table creation and read/write permissions.
+* Download `goobie-sql.lua` into `gamemode/server/thirdparty/goobie-sql.lua`. Install its matching `gmsv_goobie_mysql` binary in `garrysmod/lua/bin`.
+* Set the host, port, user, password, and database in `gamemode/server/mysql.lua`. The database must already exist; BaseWars creates its own tables. Use an account with table creation and read/write permissions.
 
-Player data and crash refunds use MySQL only. BaseWars creates the tables in an empty database at startup.
-
-Textscreen editor settings are saved in MySQL. Steam emoticon image downloads in the custom chat are disabled because they required writing client cache files.
+The default weapon configuration uses Customizable Weaponry 2.0. You can change `gamemode/config.lua` if your server uses different weapons.
 
 ## Screenshots
 
@@ -57,88 +64,7 @@ Textscreen editor settings are saved in MySQL. Steam emoticon image downloads in
   **Developer:** [Stepan Fedotov](mailto:admin@futuretechs.eu)
 
   **Developer:** [Ling](mailto:ling@hexahedron.pw)
-  
+
 ### Others
 
   Credited in the author field of the gamemode.
-  
-# Git stuff
-
-## Contributing
-
-See [CONTRIBUTING](CONTRIBUTING.md).
-
-## Usage for developers
-
-```
--- Manipulating players money
-	ply:GiveMoney(amt)
-	ply:SetMoney(amt)
-	ply:TakeMoney(amt)
-
--- Manipulating players level
-	ply:AddLevel(amt)
-	ply:SetLevel(amt)
-
-	ply:SetXP(amt)
-	ply:AddXP(amt)
-
--- Manipulating players karma
-	ply:AddKarma(amt)
-	ply:SetKarma(amt)
-
--- Utility global functions
-	BaseWars.Raid:IsOnGoing()
-
-	BaseWars.UTIL.Log(...)
-	BaseWars.UTIL.RefundAll(ply, returnAsTable) -- Call with no arg to do full server refund, with arg to refund only them, call with second arg to REFUND NO-ONE but get a 'UID = Money' table
-
-	BaseWars.NumberFormat(number) -- Converts to scale suffixed, eg 8,100,000 -> 8.1 Million
-
-
--- Utility metamethods
-	ply:InFaction(name, leader) -- args optional, ply:InFaction() for ANY faction, ply:InFaction(nil, true) if LEADER of ANY faction, ect
-
-	ply:InRaid()
-	ply:Raidable(ignoreCooldown)
-
-	ply:Notify(string, color) -- For strings try and keep them localised using BaseWars.LANG, and there are some global color enums, BASEWARS_NOTIFCATION_*
-
-
--- Available hooks
-	hook.Add("BaseWars_PlayerEmptyPrinter", "name", function(ply, ent, money) end)
-
-	hook.Add("BaseWars_PlayerBuyEntity", "name", function(ply, ent) end)
-	hook.Add("BaseWars_PlayerBuyGun",    "name", function(ply, ent) end)
-	hook.Add("BaseWars_PlayerBuyDrug",   "name", function(ply, ent) end)
-	hook.Add("BaseWars_PlayerBuyProp",   "name", function(ply, ent) end)
-
--- 'CanBuy' hooks can be returned as false to block buying, with the second arg being an error message
-	hook.Add("BaseWars_PlayerCanBuyEntity", "name", function(ply, class) end)
-	hook.Add("BaseWars_PlayerCanBuyGun",    "name", function(ply, class) end)
-	hook.Add("BaseWars_PlayerCanBuyDrug",   "name", function(ply, class) end)
-	hook.Add("BaseWars_PlayerCanBuyProp",   "name", function(ply, class) end)
-
--- Similar to the 'CanBuy', you can return false with an error message.
-	hook.Add("CanCreateFaction", "name", function(ply, name, password) end)
-	hook.Add("CanJoinFaction",   "name", function(ply, name, password) end)
-	hook.Add("CanLeaveFaction",  "name", function(ply, disband) end)
-
--- Same as above, false to make them unraidable, followed by a reason why.
-	hook.Add("PlayerIsRaidable", "name", function(ply) end)
-	
--- Called when certain drug events happen to a player
-	hook.Add("PlayerRemoveDrug", "name", function(ply, effect) end)
-	hook.Add("PlayerApplyDrug", "name", function(ply, effect) end)
-
--- Deriving entities
-	ENT.Base = "bw_base"                -- Generic electronic
-	ENT.Base = "bw_base_electronics"    -- Power CONSUMING electronic
-	ENT.Base = "bw_base_generator"      -- Power GENERATING electronic
-	ENT.Base = "bw_base_moneyprinter"   -- Template moneyprinter
-	ENT.Base = "bw_base_turret"         -- Automated turrets!
-	ENT.Base = "bw_base_explosive"      -- Explosive base, with support for cluster bombs
-	ENT.Base = "bw_explosive_mine"      -- Explosive base with code for proximity detonation
--- You can also base off of a lot of entities if you want to inherit their behaviours
--- For example, the vending machine contains a lot of code that allows its behaviour to be modified
-```

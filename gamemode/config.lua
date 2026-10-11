@@ -1,7 +1,6 @@
 -- This config is not basic, but is designed to be moron proofed.
 -- If you are a DEVELOPER and want some more intermediate config see the following files
 -- IGNORE THIS IF YOU CAN'T CODE AT AN INTERMEDIATE LEVEL WITH LUA!
--- README_SF.md for hooks and methods
 -- gamemode/server/hooks.lua for XP and karma logic, along with some examples of how to use hooks
 -- gamemode/server/commands.lua for chat commands
 -- gamemode/server/mysql.lua for the required MySQL connection.
