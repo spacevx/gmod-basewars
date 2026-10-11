@@ -351,6 +351,11 @@ else
 		self:DrawModel()
 
 		if CLIENT then
+			local ply = LocalPlayer()
+			local maxDistSqr = 250000
+
+			if ply:GetPos():DistToSqr(self:GetPos()) > maxDistSqr then return end
+			
 			local pos, ang, scale = self:Calc3D2DParams()
 
 			cam.Start3D2D(pos, ang, scale)
