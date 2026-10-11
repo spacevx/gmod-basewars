@@ -9,7 +9,7 @@ function ulx.addmoney(calling_ply, target_plys, amt)
 		v:GiveMoney(amt)
 		table.insert(affected_plys, v)
 	end
-	ulx.fancyLogAdmin(calling_ply, "#A gave " .. string.format(BaseWars.LANG.CURFORMER, "#s") .. " to #T", affected_plys, amt)
+	ulx.fancyLogAdmin(calling_ply, "#A gave " .. string.format(BaseWars.LANG.CURFORMER, "#s") .. " to #T", amt, affected_plys)
 end
 
 local addmoney = ulx.command(CATEGORY_NAME, "ulx addmoney", ulx.addmoney, "!addmoney")
@@ -24,7 +24,7 @@ function ulx.takemoney(calling_ply, target_plys, amt)
 		v:TakeMoney(amt)
 		table.insert(affected_plys, v)
 	end
-	ulx.fancyLogAdmin(calling_ply, "#A took " .. string.format(BaseWars.LANG.CURFORMER, "#s") .. " from #T", affected_plys, amt)
+	ulx.fancyLogAdmin(calling_ply, "#A took " .. string.format(BaseWars.LANG.CURFORMER, "#s") .. " from #T", amt, affected_plys)
 end
 
 local takemoney = ulx.command(CATEGORY_NAME, "ulx takemoney", ulx.takemoney, "!takemoney")
@@ -54,7 +54,7 @@ function ulx.addlevel(calling_ply, target_plys, amt)
 		v:AddLevel(amt)
 		table.insert(affected_plys, v)
 	end
-	ulx.fancyLogAdmin(calling_ply, "#A added #s to #T's level", affected_plys, amt)
+	ulx.fancyLogAdmin(calling_ply, "#A added #s to #T's level", amt, affected_plys)
 end
 
 local addlevel = ulx.command(CATEGORY_NAME, "ulx addlevel", ulx.addlevel, "!addlevel")
@@ -84,7 +84,7 @@ function ulx.addxp(calling_ply, target_plys, amt)
 		v:AddXP(amt)
 		table.insert(affected_plys, v)
 	end
-	ulx.fancyLogAdmin(calling_ply, "#A added #s to #T's XP", affected_plys, amt)
+	ulx.fancyLogAdmin(calling_ply, "#A added #s to #T's XP", amt, affected_plys)
 end
 
 local addxp = ulx.command(CATEGORY_NAME, "ulx addxp", ulx.addxp, "!addxp")
@@ -114,7 +114,7 @@ function ulx.addkarma(calling_ply, target_plys, amt)
 		v:AddKarma(amt)
 		table.insert(affected_plys, v)
 	end
-	ulx.fancyLogAdmin(calling_ply, "#A added #s to #T's karma", affected_plys, amt)
+	ulx.fancyLogAdmin(calling_ply, "#A added #s to #T's karma", amt, affected_plys)
 end
 
 local addkarma = ulx.command(CATEGORY_NAME, "ulx addkarma", ulx.addkarma, "!addkarma")
