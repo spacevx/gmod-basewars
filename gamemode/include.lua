@@ -1,3 +1,7 @@
+if not hook or hook.Author ~= "Srlion" or not PRE_HOOK_RETURN then
+	error("BaseWars requires Srlion's Hook Library: https://steamcommunity.com/sharedfiles/filedetails/?id=1907060869", 0)
+end
+
 DeriveGamemode("sandbox")
 
 local function IncludeCS(File)

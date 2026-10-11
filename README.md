@@ -18,6 +18,7 @@ This project is a refactor of the original BaseWars gamemode. Its goal is to pro
 ## What's changed
 
 * Replaced the old player data (tmysql/SQLite) in favor of [goobie-sql](https://github.com/Srlion/goobie-sql)
+* Switched to [Srlion's Hook Library](https://github.com/Srlion/Hook-Library) and its hook priorities
 * Removed EasyLua
 * Removed the old qchat
 * A lot of optimizations
@@ -31,11 +32,13 @@ This refactor is intended for a fresh database. Please do not try to import data
 * A fading door addon.
 * A MySQL database.
 * A [goobie-sql release](https://github.com/Srlion/goobie-sql/releases) compatible with your Garry's Mod branch.
+* [Srlion's Hook Library](https://steamcommunity.com/sharedfiles/filedetails/?id=1907060869), installed through your server's Workshop collection.
 
 ### Installing the gamemode
 * Drag the folder into ```garrysmod/gamemodes```.
 * Edit ```garrysmod/gamemodes/basewars/gamemode/config.lua``` to your own liking.
 * Download `goobie-sql.lua` into `gamemode/server/thirdparty/goobie-sql.lua`. Install its matching `gmsv_goobie_mysql` binary in `garrysmod/lua/bin`.
+* Add [Srlion's Hook Library](https://steamcommunity.com/sharedfiles/filedetails/?id=1907060869) to your server's Workshop collection.
 * Set the host, port, user, password, and database in `gamemode/server/mysql.lua`. The database must already exist; BaseWars creates its own tables. Use an account with table creation and read/write permissions.
 
 The default weapon configuration uses Customizable Weaponry 2.0. You can change `gamemode/config.lua` if your server uses different weapons.

@@ -142,6 +142,6 @@ end
 local function FalseInRaid(ply)
 	if ply:InRaid() then return false, BaseWars.LANG.RaidNoFaction end
 end
-hook.Add("CanCreateFaction", tag, FalseInRaid)
-hook.Add("CanLeaveFaction", tag, FalseInRaid)
-hook.Add("CanJoinFaction", tag, FalseInRaid)
+hook.Add("CanCreateFaction", tag, FalseInRaid, PRE_HOOK_RETURN)
+hook.Add("CanLeaveFaction", tag, FalseInRaid, PRE_HOOK_RETURN)
+hook.Add("CanJoinFaction", tag, FalseInRaid, PRE_HOOK_RETURN)
