@@ -284,7 +284,7 @@ function storage.RefundFromCrash(ply)
 			local commitErr = txn:Commit()
 			if commitErr then return fail("commit crash refund for " .. sid, commitErr) end
 			if not playerAlive(ply) then return end
-			ply:SetNWString("BaseWars.Money", tostring(ply:GetMoney() + amount))
+			BaseWars.Money:UpdateMoney(ply, ply:GetMoney() + amount)
 			ply:ChatPrint(BaseWars.LANG.WelcomeBackCrash)
 			ply:ChatPrint(string.format(BaseWars.LANG.Refunded, BaseWars.NumberFormat(amount)))
 		end)
