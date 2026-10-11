@@ -1,6 +1,3 @@
-MODULE.Name 	= "PlayTime_Money"
-MODULE.Author 	= "Q2F2 & Ghosty"
-
 local tag = "BaseWars.PlayTime_Money"
 
 local TimeMat 	= Material("icon32/clock_wh32.png", "nocull noclamp smooth")
@@ -10,13 +7,11 @@ local abs 		= math.abs
 local floor 	= math.floor
 local clamp 	= math.Clamp
 
-function MODULE:__INIT()
-	surface.CreateFont(tag, {
-		font = "Roboto",
-		weight = 800,
-		size = 24,
-	})
-end
+surface.CreateFont(tag, {
+	font = "Roboto",
+	weight = 800,
+	size = 24,
+})
 
 local function playTime(n)
 	local dat = n

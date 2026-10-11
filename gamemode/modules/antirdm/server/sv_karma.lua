@@ -35,3 +35,9 @@ end
 PLAYER.AddKarma = Curry(MODULE.Add)
 hook.Add("LoadData", tag .. ".Load", Curry(MODULE.Load))
 hook.Add("PlayerDisconnected", tag .. ".Save", Curry(MODULE.Save))
+
+timer.Create("BaseWars_KarmaRecover", 5 * 60, 0, function()
+	for _, ply in player.Iterator() do
+		ply:AddKarma(ply:GetKarma() < 0 and 2 or 1)
+	end
+end)

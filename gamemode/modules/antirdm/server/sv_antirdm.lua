@@ -1,6 +1,3 @@
-MODULE.Name 	= "AntiRDM"
-MODULE.Author 	= "Q2F2 & Ghosty"
-
 local tag = "BaseWars.AntiRDM"
 local PLAYER = debug.getregistry().Player
 

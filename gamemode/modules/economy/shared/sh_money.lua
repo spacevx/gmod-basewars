@@ -1,6 +1,3 @@
-MODULE.Name 	= "Money"
-MODULE.Author 	= "Q2F2, Ghosty and Tenrys"
-
 local PLAYER = debug.getregistry().Player
 
 function MODULE:GetMoney(ply)

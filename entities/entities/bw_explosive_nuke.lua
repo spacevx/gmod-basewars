@@ -27,7 +27,6 @@ function ENT:NukeEffects()
 			ply:TakeDamage(1300, owner, owner) -- maxed prop = ~1200
 		continue end
 		if not ply:Alive() then continue end
-		if ply:GetNWBool("Unrestricted") then continue end
 		ply:ScreenFade(SCREENFADE.OUT, color_white, 0.2, 2)
 		ply:EmitSound("ambient/explosions/explode_5.wav", 140, 50, 1)
 		ply:EmitSound("ambient/explosions/explode_5.wav", 140, 50, 1)

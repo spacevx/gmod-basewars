@@ -9,9 +9,15 @@ PLAYER.InitLevel = Curry(MODULE.Init)
 for k, v in next, player.GetAll() do
 	MODULE:Init(v)
 end
-function MODULE:Save(ply)
+function MODULE:SaveLevel(ply, amount)
 	BaseWars.MySQL.SaveVar(ply, "level", amount or self:GetLevel(ply))
+end
+function MODULE:SaveXP(ply, amount)
 	BaseWars.MySQL.SaveVar(ply, "xp", amount or self:GetXP(ply))
+end
+function MODULE:Save(ply)
+	self:SaveLevel(ply)
+	self:SaveXP(ply)
 end
 PLAYER.SaveLevels = Curry(MODULE.Save)
 function MODULE:Load(ply)
@@ -47,7 +53,7 @@ function MODULE:Set(ply, amount)
 	if amount > BaseWars.Config.LevelSettings.MaxLevel then amount = BaseWars.Config.LevelSettings.MaxLevel end
 	amount = math.Round(amount)
 	ply.level = amount
-	self:Save(ply)
+	self:SaveLevel(ply, amount)
 	ply:SetNWString(tag .. ".Level", tostring(amount))
 end
 PLAYER.SetLevel = Curry(MODULE.Set)
@@ -60,7 +66,7 @@ function MODULE:SetXP(ply, amount)
 	if not isnumber(amount) or amount < 0 then amount = 0 end
 	amount = math.Round(amount)
 	ply.xp = amount
-	self:Save(ply)
+	self:SaveXP(ply, amount)
 	ply:SetNWString(tag .. ".XP", tostring(amount))
 	self:CheckLevels( ply )
 end

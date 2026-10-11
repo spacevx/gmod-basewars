@@ -163,10 +163,7 @@ BaseWars.Commands.AddCommand({"maxupg", "max", "maxupgr", "maxupgrade"}, functio
 	end
 end, false)
 
-local _cmdtbl = {"dm", "tell", "msg"}
-if not aowl then _cmdtbl[#_cmdtbl + 1] = "pm" end
-
-BaseWars.Commands.AddCommand(_cmdtbl, function(ply, line, who)
+BaseWars.Commands.AddCommand({"dm", "tell", "msg", "pm"}, function(ply, line, who)
 	if not who then return false, BaseWars.LANG.InvalidPlayer end
 	local Targ = FindPlayer(who)
 	if not BaseWars.Ents:ValidPlayer(Targ) then return false, BaseWars.LANG.InvalidPlayer end
@@ -202,11 +199,7 @@ BaseWars.Commands.AddCommand({"sell", "destroy", "remove", "delete"}, function(p
 	Ent:Remove()
 end, false)
 
--- If you are not using aowl, add /drop for dropping weapons :)
-local _cmdtbl = {"dw", "dropweapon", "dropwep"}
-if not aowl then _cmdtbl[#_cmdtbl + 1] = "drop" end
-
-BaseWars.Commands.AddCommand(_cmdtbl, function(ply)
+BaseWars.Commands.AddCommand({"dw", "dropweapon", "dropwep", "drop"}, function(ply)
 	local Wep = ply:GetActiveWeapon()
 	if BaseWars.Ents:Valid(Wep) then
 		local Model = Wep:GetModel()

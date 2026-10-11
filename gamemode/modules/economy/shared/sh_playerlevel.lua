@@ -1,6 +1,3 @@
-MODULE.Name 	= "PlayerLevel"
-MODULE.Author 	= "Q2F2 and Trixter"
-
 local tag = "BaseWars.PlayerLevel"
 local PLAYER = debug.getregistry().Player
 

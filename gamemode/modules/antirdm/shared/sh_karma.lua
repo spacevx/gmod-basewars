@@ -1,6 +1,3 @@
-MODULE.Name 	= "Karma"
-MODULE.Author 	= "Q2F2 & Ghosty"
-
 local tag = "BaseWars.Karma"
 local PLAYER = debug.getregistry().Player
 
