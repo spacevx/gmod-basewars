@@ -10,6 +10,7 @@ ENT.Material = "models/alyx/emptool_glow"
 ENT.PowerRequired = 10
 ENT.PowerMin = 8000
 ENT.PowerCapacity = 12500
+ENT.ThinkPeriods = 1
 
 ENT.Drain = 1500
 

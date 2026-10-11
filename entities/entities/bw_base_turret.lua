@@ -9,6 +9,7 @@ ENT.Model = "models/Combine_turrets/Floor_turret.mdl"
 ENT.PowerRequired = 10
 ENT.PowerMin = 1000
 ENT.PowerCapacity = 2500
+ENT.ThinkPeriods = 1
 
 ENT.Drain = 35
 

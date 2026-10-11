@@ -56,7 +56,7 @@ function ENT:ThinkFunc()
     if CurTime() < self.CookStart + self.CookTime then
         local timeleft = (self.CookStart + self.CookTime) - CurTime()
         self.Status = "Cooking " .. self.Cook .. " (" .. BaseWars.UTIL.TimeParse( timeleft ) .. ")"
-		self:DrainPower(self.Drain)
+		self:DrainPower(self.Drain * self.ThinkPeriods)
     else
         if self.Cooking then
             self:SpawnDrug( self.Cook )

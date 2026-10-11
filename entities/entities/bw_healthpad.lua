@@ -7,6 +7,7 @@ ENT.Model = "models/props_lab/teleplatform.mdl"
 
 ENT.PowerRequired = 10
 ENT.PowerCapacity = 5000
+ENT.ThinkPeriods = 1
 
 ENT.Drain = 50
 

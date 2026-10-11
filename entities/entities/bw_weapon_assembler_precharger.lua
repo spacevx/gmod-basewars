@@ -53,7 +53,7 @@ function ENT:ThinkFunc()
 		self:doTrace(i)
 		local ent = trace_result.Entity
 		if IsValid(ent) and ent:GetClass() == "bw_weapon_assembler" then
-			ent:AddPrechargeLevel(1)
+			ent:AddPrechargeLevel(self.ThinkPeriods)
 		end
 	end
 end

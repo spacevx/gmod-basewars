@@ -9,6 +9,7 @@ ENT.Capacity 		= 10000
 ENT.Money 			= 0
 ENT.MaxPaper		= 2500
 ENT.PrintInterval 	= 1
+ENT.ThinkPeriods = 1
 ENT.PrintAmount		= 8
 ENT.MaxLevel 		= 25
 ENT.UpgradeCost 	= 1000

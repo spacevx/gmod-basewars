@@ -10,6 +10,7 @@ ENT.Skin = 0
 ENT.IsElectronic = true
 ENT.PowerRequired = 5
 ENT.PowerCapacity = 1000
+ENT.ThinkPeriods = 3
 
 function ENT:DrainPower(val)
 	if not self:IsPowered(val) then return false end
@@ -22,35 +23,32 @@ function ENT:IsPowered(val)
 end
 
 if SERVER then
+	function ENT:ConsumePower(periods)
+		local required = self.PowerRequired
+		if required <= 0 then return true end
+		local steps = math.min(periods, math.floor(self:GetPower() / required))
+		if steps < 1 then return false end
+		return self:DrainPower(steps * required)
+	end
+
 	function ENT:Think()
 		self:ThinkFuncBypass()
-		if self:IsPowered() and self:BadlyDamaged() and math.random(0, 11) == 0 then
+		local periods = self.ThinkPeriods
+		if self:IsPowered() and self:BadlyDamaged() and math.random(0, 11) < periods then
 			self:Spark()
 		end
-		if self:WaterLevel() > 0 and not self:GetWaterProof() then
-			if not self.FirstTime and self:Health() > 25 then
-				self:SetHealth(25)
-				self:Spark()
-				self.FirstTime = true
-			end
-			if self.rtb == 2 then
-				self.rtb = 0
-				self:TakeDamage(1)
-			else
-				self.rtb = self.rtb + 1
-			end
-		else
-			self.FirstTime = false
-		end
-		if not self:DrainPower() or self:BadlyDamaged() then
+		self:WaterThink(periods)
+		if not self:ConsumePower(periods) or self:BadlyDamaged() then
 			if self:GetUsable() then self:SetUsable(false) end
-		return end
+			return self:ScheduleThink()
+		end
 		local Res = self:CheckUsable()
 		local State = Res ~= false
 		if State ~= self:GetUsable() then
 			self:SetUsable(State)
 		end
 		self:ThinkFunc()
+		return self:ScheduleThink()
 	end
 	function ENT:CheckUsable()
 	end

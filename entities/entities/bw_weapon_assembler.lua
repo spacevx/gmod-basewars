@@ -8,6 +8,7 @@ ENT.Model = "models/props_c17/substation_transformer01a.mdl"
 
 ENT.PowerRequired = 25000
 ENT.PowerCapacity = 1e8
+ENT.ThinkPeriods = 2
 
 ENT.PresetMaxHealth = 50000
 

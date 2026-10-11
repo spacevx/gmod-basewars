@@ -26,6 +26,7 @@ ENT.ShootPosOffset = Vector( 0, 0, 0 )
 ENT.Sound = Sound("npc/turret_floor/shoot1.wav")
 
 ENT.PresetMaxHealth = 2000
+ENT.ThinkPeriods = 1
 
 if SERVER then
 function ENT:Init()

@@ -13,23 +13,28 @@ ENT.PowerGenerated = 15
 ENT.PowerCapacity = 1000
 ENT.TransmitRadius = 600
 ENT.TransmitRate = 20
+ENT.ThinkPeriods = 3
 
 do
 	local m_min = math.min
-	function ENT:TransmitPower(tbl, count)
+	function ENT:TransmitPower(tbl, count, periods)
+		local rate = self.TransmitRate * (periods or 1)
+		local power = self:GetPower()
+		local start = power
 		for i = 1, count do
+			if power <= 0 then break end
 			local v = tbl[i]
 			if not IsValid(v) then continue end
 			local Pow = v.GetPower and v:GetPower() or 0
 			local Max = v.GetMaxPower and v:GetMaxPower() or 0
 			if Max < 1 then continue end
 			if Pow >= Max then continue end
-			local Transmit = m_min(self.TransmitRate, self:GetPower())
+			local Transmit = m_min(rate, power)
 			Transmit = m_min(Transmit, (Max - Pow))
 			v:ReceivePower(Transmit)
-			local Drain = Transmit - (PowerNotUsed or 0)
-			self:DrainPower(Drain)
+			power = power - Transmit
 		end
+		if power ~= start then self:SetPower(power) end
 	end
 end
 
@@ -73,8 +78,9 @@ if SERVER then
 		powered_ent_count = count
 	end)
 	function ENT:Think()
+		local periods = self.ThinkPeriods
 		if not self:BadlyDamaged() then
-			self:ReceivePower(self.PowerGenerated)
+			self:ReceivePower(self.PowerGenerated * periods)
 		end
 		do
 			local time = CurTime()
@@ -95,27 +101,14 @@ if SERVER then
 				self.nearbyCount = count
 				self.nextNearbyCache = time + 2
 			end
-			self:TransmitPower(self.nearbyEnts, self.nearbyCount)
+			self:TransmitPower(self.nearbyEnts, self.nearbyCount, periods)
 		end
-		if self:BadlyDamaged() and math.random(0, 11) == 0 then
+		if self:BadlyDamaged() and math.random(0, 11) < periods then
 			self:Spark()
 		end
-		if self:WaterLevel() > 0 and not self:GetWaterProof() then
-			if not self.FirstTime and self:Health() > 25 then
-				self:SetHealth(25)
-				self:Spark()
-				self.FirstTime = true
-			end
-			if self.rtb == 2 then
-				self.rtb = 0
-				self:TakeDamage(1)
-			else
-				self.rtb = self.rtb + 1
-			end
-		else
-			self.FirstTime = false
-		end
-		if self:BadlyDamaged() then return end
+		self:WaterThink(periods)
+		if self:BadlyDamaged() then return self:ScheduleThink() end
 		self:ThinkFunc()
+		return self:ScheduleThink()
 	end
 end

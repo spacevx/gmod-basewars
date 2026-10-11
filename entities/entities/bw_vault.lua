@@ -13,6 +13,7 @@ ENT.Radius          = 600
 ENT.PowerRequired   = 15
 
 ENT.PowerCapacity   = 25000
+ENT.ThinkPeriods    = 2
 ENT.PresetMaxHealth = 1000
 
 ENT.CollectInterval = 10 -- also interest interval for sake of simplicity

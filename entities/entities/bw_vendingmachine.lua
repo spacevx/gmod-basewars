@@ -5,6 +5,7 @@ ENT.PrintName = "Vending Machine"
 
 ENT.PowerRequired = 2
 ENT.PowerCapacity = 3000
+ENT.ThinkPeriods = 1
 
 ENT.Items 		= {
 	soda = {

@@ -44,6 +44,7 @@ end
 ENT.PowerRequired = 10
 ENT.PowerMin = 500
 ENT.PowerCapacity = 2500
+ENT.ThinkPeriods = 1
 ENT.IsAbleToSetRange = true
 
 ENT.Drain = 35

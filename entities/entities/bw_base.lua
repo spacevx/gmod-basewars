@@ -8,6 +8,7 @@ ENT.Model = "models/props_interiors/pot02a.mdl"
 ENT.Skin = 0
 
 ENT.PresetMaxHealth = 100
+ENT.ThinkPeriods = 1
 
 function ENT:Init()
 end
@@ -50,10 +51,39 @@ function ENT:ReceivePower(val)
 	local Value = self:GetPower() + val
 	if Value > self:GetMaxPower() then Value = self:GetMaxPower() end
 	if Value < 0 then val = 0 end
+	if Value == self:GetPower() then return end
 	return self:SetPower(Value)
 end
 
 if SERVER then
+	local BASE_THINK_TIME = 0.2
+	local WATER_HEALTH = 25
+	local WATER_DAMAGE_PERIODS = 3
+	local tickInterval = engine.TickInterval()
+	local THINK_PERIOD = math.Round(BASE_THINK_TIME / tickInterval) * tickInterval
+
+	function ENT:ScheduleThink()
+		self:NextThink(CurTime() + THINK_PERIOD * self.ThinkPeriods)
+		return true
+	end
+
+	function ENT:WaterThink(periods)
+		if self:WaterLevel() <= 0 or self:GetWaterProof() then
+			self.FirstTime = false
+			return
+		end
+		if not self.FirstTime and self:Health() > WATER_HEALTH then
+			self:SetHealth(WATER_HEALTH)
+			self:Spark()
+			self.FirstTime = true
+		end
+		self.rtb = self.rtb + periods
+		if self.rtb < WATER_DAMAGE_PERIODS then return end
+		local damage = math.floor(self.rtb / WATER_DAMAGE_PERIODS)
+		self.rtb = self.rtb % WATER_DAMAGE_PERIODS
+		self:TakeDamage(damage)
+	end
+
 	function ENT:Initialize()
 		self:SetModel(self.Model)
 		self:SetSkin(self.Skin)
