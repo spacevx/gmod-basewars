@@ -62,9 +62,11 @@ function Economy:SetLevel(ply, amount)
 	if not isnumber(amount) or amount < 0 then amount = 0 end
 	if amount > BaseWars.Config.LevelSettings.MaxLevel then amount = BaseWars.Config.LevelSettings.MaxLevel end
 	amount = math.Round(amount)
+	local previous = ply:GetLevel()
 	ply.level = amount
 	self:SaveLevel(ply, amount)
 	ply:SetNWString(tag .. ".Level", tostring(amount))
+	if previous ~= amount then hook.Run("BaseWars_PlayerLevelChanged", ply, previous, amount) end
 end
 function PLAYER:SetLevel(amount)
 	economy:SetLevel(self, amount)

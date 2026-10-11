@@ -24,8 +24,10 @@ function MODULE:Set(ply, amount)
 	if not isnumber(amount) or amount < -100 then amount = -100 end
 	if amount > 100 then amount = 100 end
 	amount = math.Round(amount)
+	local previous = ply:GetKarma()
 	self:Save(ply, amount)
 	ply:SetNWString(tag, tostring(amount))
+	if previous ~= amount then hook.Run("BaseWars_KarmaChanged", ply, previous, amount) end
 end
 PLAYER.SetKarma = Curry(MODULE.Set)
 function MODULE:Add(ply, amount)

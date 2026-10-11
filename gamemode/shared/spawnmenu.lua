@@ -134,7 +134,7 @@ if SERVER then
 			if lim then
 				LimitDeduct(Ent, ent, ply)
 			end
-			hook.Run("BaseWars_PlayerBuyGun", ply, Ent) -- Player, Gun entity
+			hook.Run("BaseWars_PlayerBuyGun", ply, Ent, price, item) -- Player, Gun entity, price, item name
 		return end
 		if drug then
 			local Rand = (ent == "Random")
@@ -151,7 +151,7 @@ if SERVER then
 			if lim then
 				LimitDeduct(Ent, ent, ply)
 			end
-			hook.Run("BaseWars_PlayerBuyDrug", ply, Ent) -- Player, Drug entity
+			hook.Run("BaseWars_PlayerBuyDrug", ply, Ent, price, item) -- Player, Drug entity, price, item name
 		return end
 		local prop
 		local noundo
@@ -162,7 +162,7 @@ if SERVER then
 				newEnt = newEnt:SpawnFunction(ply, tr, ent)
 				if not IsValid(newEnt) then return end
 				setupEntity(ply, newEnt, ent, price, lim, always_raid, health)
-				hook.Run("BaseWars_PlayerBuyEntity", ply, newEnt) -- Player, Entity
+				hook.Run("BaseWars_PlayerBuyEntity", ply, newEnt, price, item) -- Player, Entity, price, item name
 			return end
 			setupEntity(ply, newEnt, ent, price, lim, always_raid, health)
 			if (ply.InDev and ply:InDev()) then
@@ -220,9 +220,9 @@ if SERVER then
 		undo.Finish()
 		BaseWars.CPPI.SetOwner(prop, ply)
 		if ent then
-			hook.Run("BaseWars_PlayerBuyEntity", ply, prop) -- Player, Entity
+			hook.Run("BaseWars_PlayerBuyEntity", ply, prop, price, item) -- Player, Entity, price, item name
 		else
-			hook.Run("BaseWars_PlayerBuyProp", ply, prop) -- Player, Prop
+			hook.Run("BaseWars_PlayerBuyProp", ply, prop, price, item) -- Player, Prop, price, item name
 		end
 	end
 	concommand.Add("basewars_spawn",function(ply,_,args)

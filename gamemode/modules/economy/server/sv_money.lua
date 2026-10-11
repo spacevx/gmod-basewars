@@ -83,6 +83,7 @@ end
 function Economy:TransferMoney(ply1, amount, ply2)
 	self:TakeMoney(ply1, amount)
 	self:GiveMoney(ply2, amount)
+	hook.Run("BaseWars_MoneyTransferred", ply1, ply2, amount)
 end
 function PLAYER:TransferMoney(amount, recipient)
 	economy:TransferMoney(self, amount, recipient)

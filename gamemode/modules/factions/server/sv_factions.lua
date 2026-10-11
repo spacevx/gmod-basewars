@@ -89,6 +89,9 @@ function MODULE:Set(ply, value, password, force)
 	Faction.members[ply:SteamID()] = ply
 	ply:SetNW2String(tag, value)
 	ply:SetTeam(Faction.teamid)
+	if not (force and Faction.leader == ply:SteamID()) then
+		hook.Run("BaseWars_FactionJoined", ply, value)
+	end
 end
 local setFaction = Curry(MODULE.Set)
 PLAYER.SetFaction = setFaction
@@ -123,6 +126,7 @@ function MODULE:Leave(ply, disband, forcedisband, ignoreHook)
 		ply:SetNW2Bool(tag .. ".Leader", false)
 		BaseWars.Factions.FactionTable[Fac] = nil
 		ply:SetTeam( 1 )
+		hook.Run("BaseWars_FactionDisbanded", ply, Fac)
 	else
 		if Faction.leader == ply:SteamID() then
 			ply:Notify(BaseWars.LANG.FactionCantLeaveLeader, BASEWARS_NOTIFICATION_ERROR)
@@ -136,6 +140,7 @@ function MODULE:Leave(ply, disband, forcedisband, ignoreHook)
 			BaseWars.UTIL.Log("Faction disband for ", Fac, ". All members left. <Leader must have D/C'ed>")
 			BaseWars.Factions.FactionTable[Fac] = nil
 		end
+		hook.Run("BaseWars_FactionLeft", ply, Fac)
 	end
 end
 PLAYER.LeaveFaction = Curry(MODULE.Leave)
@@ -227,6 +232,7 @@ function MODULE:Create(ply, name, password, color)
 	self:SendFactionData(teamid, name, color)
 	ply:SetNW2Bool(tag .. ".Leader", true)
 	ply:SetFaction(name, nil, true)
+	hook.Run("BaseWars_FactionCreated", ply, name)
 end
 PLAYER.CreateFaction = Curry(MODULE.Create)
 
