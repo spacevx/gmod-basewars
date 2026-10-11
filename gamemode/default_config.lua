@@ -142,7 +142,6 @@ local BaseWars_Config = {
 	PayDayRate 			= 60 * 3,
 	PayDayRandom		= 50,
 	StartMoney 			= 5000,
-	CustomChat			= true,
 	ExtraStuff			= true,
 	CleanProps			= false,
 	AllowFriendlyFire	= false,

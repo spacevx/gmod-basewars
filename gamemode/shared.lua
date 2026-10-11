@@ -266,46 +266,6 @@ function BaseWars.NumberFormat(num)
 	return string.Comma(math.Round(num, 1))
 end
 
-local ValidChatHudTag = {
-	["color"] = true,
-	["hsv"] = true,
-	["texture"] = true,
-}
-
-function ParseChatHudTags(str)
-	if CLIENT and not chathud then return str end
-	local isChatHudTag = str:match("<(.-)>") and true or false
-	if isChatHudTag then
-		local ChatHudTag = str:match("<(.-)>")
-		local EndPos = string.find(ChatHudTag, "=")
-		if EndPos then
-			local ChatHudTagName = string.sub(ChatHudTag, 1, EndPos - 1)
-			if ValidChatHudTag[ChatHudTagName] then
-				str = string.Replace(str, "<" .. ChatHudTag .. ">", ""):Trim()
-			end
-		end
-	end
-	local isEndChatHudTag = str:match("</(.-)>") and true or false
-	if isEndChatHudTag then
-		local ChatHudTag = str:match("</(.-)>")
-		if ValidChatHudTag[ChatHudTag] then
-			str = string.Replace(str, "</" .. ChatHudTag .. ">", ""):Trim()
-		end
-	end
-	local stillHasTags = str:match("<(.-)>") and true or false
-	if stillHasTags then
-		local ChatHudTag = str:match("<(.-)>")
-		local EndPos = string.find(ChatHudTag, "=")
-		if EndPos then
-			local ChatHudTagName = string.sub(ChatHudTag, 1, EndPos - 1)
-			if ValidChatHudTag[ChatHudTagName] then
-				str = ParseChatHudTags(str)
-			end
-		end
-	end
-	return str
-end
-
 local PlayersCol = Color(125, 125, 125, 255)
 team.SetUp(1, "No Faction", PlayersCol)
 

@@ -11,7 +11,6 @@ This project is a refactor of the original BaseWars gamemode. Its goal is to pro
 * Progression via a configurable leveling system!
 * Automated anti-spawnkill!
 * Automated raiding, no more 'random raids'!
-* Custom chatbox!
 * Built-in textscreens!
 * Custom language support!
 * Easy to use entity bases!
@@ -20,6 +19,7 @@ This project is a refactor of the original BaseWars gamemode. Its goal is to pro
 
 * Replaced the old player data system with MySQL through [goobie-sql](https://github.com/Srlion/goobie-sql). tmysql4, SQLite, and file-based saves are no longer used.
 * Removed EasyLua
+* Removed the old qchat
 * A lot of optimizations
 
 This refactor is intended for a fresh database. Please do not try to import data from your old BaseWars gamemode unless you know what you're doing.
@@ -48,8 +48,6 @@ The default weapon configuration uses Customizable Weaponry 2.0. You can change 
 ![ScreenShot](http://puu.sh/mALv7/eefc81fe95.jpg)
 ### Entities
 ![ScreenShot](http://puu.sh/mALDK/b199a75830.jpg)
-### Chatbox
-![ScreenShot](http://puu.sh/mANRz/5577d91aa3.jpg)
 ### Textscreens
 ![ScreenShot](http://puu.sh/mAOmT/370b971f4f.jpg)
 

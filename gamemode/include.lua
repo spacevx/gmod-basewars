@@ -29,9 +29,6 @@ do
 	IncludeCS("shared/spawnmenu.lua")
 	IncludeCS("shared/cppi.lua")
 	IncludeCS("shared/admin.lua")
-	if BaseWars.Config.CustomChat then
-		IncludeCS("shared/chitchat.lua")
-	end
 	IncludeCS("shared/utf8_extender.lua")
 	IncludeCS("shared/playuhr.lua")
 	if BaseWars.Config.ExtraStuff then
@@ -51,11 +48,6 @@ do
 	LoadFileCS("client/cl_interactions.lua")
 	LoadFileCS("client/cl_minimap.lua")
 	LoadFileCS("client/gui_cleanup.lua")
-	if BaseWars.Config.CustomChat then
-		LoadFileCS("client/qchat.lua")
-		LoadFileCS("client/chathud_markup.lua")
-		LoadFileCS("client/chathud.lua")
-	end
 end
 
 do

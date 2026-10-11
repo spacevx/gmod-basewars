@@ -239,8 +239,6 @@ BaseWars.Config = {
 	PayDayRandom		= 100,
 	-- StartMoney: Amount of money new players get
 	StartMoney 			= 5000,
-	-- CustomChat: Load the built in custom chatbox, disable if you use your own (ours is better)
-	CustomChat			= false,
 	-- ExtraStuff: Load some extra things such as source engine fixes and player nickname customiser, disable if you dont want this
 	ExtraStuff			= true,
 	-- CleanProps: Finds all physics props on the map and removes them when all the entities are frist initialized (AKA: When the map first loads)
