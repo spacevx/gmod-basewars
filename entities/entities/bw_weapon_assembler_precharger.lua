@@ -1,5 +1,3 @@
--- easylua.StartEntity("bw_weapon_assembler_precharger")
-
 AddCSLuaFile()
 
 ENT.Base = "bw_base_electronics"
@@ -45,7 +43,7 @@ function ENT:Draw()
 	end
 end
 
-if CLIENT then return end -- easylua.EndEntity() end
+if CLIENT then return end
 
 function ENT:Init()
 	self:SetModel(self.Model)
@@ -62,5 +60,3 @@ function ENT:ThinkFunc()
 		end
 	end
 end
-
--- easylua.EndEntity()

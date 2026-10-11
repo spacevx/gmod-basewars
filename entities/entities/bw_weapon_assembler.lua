@@ -1,5 +1,3 @@
--- easylua.StartEntity("bw_weapon_assembler")
-
 AddCSLuaFile()
 
 ENT.Base = "bw_base_electronics"
@@ -606,7 +604,7 @@ function ENT:Draw()
 	cam.End3D2D()
 end
 
-return end -- easylua.EndEntity() end
+return end
 
 
 
@@ -700,5 +698,3 @@ local function receiveRequest(_, ply)
 	ent:SetCraftPercentage(0)
 end
 net.Receive("bw_weapon_assembler", receiveRequest)
-
--- easylua.EndEntity()

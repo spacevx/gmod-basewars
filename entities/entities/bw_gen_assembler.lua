@@ -1,5 +1,3 @@
--- easylua.StartEntity("bw_gen_assembler")
-
 AddCSLuaFile()
 
 ENT.Base 			= "bw_base_generator"
@@ -14,5 +12,3 @@ ENT.TransmitRadius 	= 150
 ENT.TransmitRate 	= 30000
 
 ENT.PresetMaxHealth = 1500
-
--- easylua.EndEntity()

@@ -1,4 +1,3 @@
---easylua.StartEntity( "bw_manual_turret2" )
 AddCSLuaFile()
 
 ENT.Base = "bw_base_electronics"
@@ -136,8 +135,6 @@ function ENT:OnRemove()
 end
 
 end
-
---easylua.EndEntity( false, false )
 
 if CLIENT then
 

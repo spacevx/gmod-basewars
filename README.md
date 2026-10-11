@@ -31,11 +31,9 @@ Or, if you want, just edit the config to use other weapons!
 ### Prerequisites
 * A CPPI compliant prop-protection addon.
 * A fading door addon.
-* Easylua, which can be downloaded [here](https://github.com/Noiwex/luadev/blob/master/lua/autorun/easylua.lua)!
 
 ### Installing the gamemode
 * Drag the folder into ```garrysmod/gamemodes```.
-* Make sure easylua is installed in ```lua/autorun```.
 * Edit ```garrysmod/gamemodes/basewars/gamemode/config.lua``` to your own liking.
 
 ## Screenshots

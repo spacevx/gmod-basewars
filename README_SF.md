@@ -30,11 +30,9 @@ If you don't want to use CW2.0, you can easily edit the config to add your own w
 * A fading door addon.
 * CS:S needs to be mounted serverside, clients will need to have CSS mounted too, along with TF2 mounted for certain sounds.
 * A working FastDL. The gamemode uses some custom content. If you don't know how to setup a FastDL server, take a look at google or refer to [this guide](https://youtu.be/0QzskhFa0L4).
-* Easylua, which can be downloaded [here](https://github.com/Noiwex/luadev/blob/master/lua/autorun/easylua.lua).
 
 ### Installing the gamemode
 * Drag the folder into ```garrysmod/gamemodes```.
-* Make sure easylua is installed in ```lua/autorun```.
 * Edit ```garrysmod/gamemodes/basewars/gamemode/config.lua``` to your own liking.
 * #### MAKE SURE you installed a CPPI compliant prop-protection addon.
 

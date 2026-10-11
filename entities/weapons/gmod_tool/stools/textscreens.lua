@@ -1,5 +1,3 @@
---easylua.StartTool("textscreens")
-
 cleanup.Register("textscreens")
 
 CreateConVar("sbox_maxtextscreens","16",{FCVAR_REPLICATED, FCVAR_NOTIFY})
@@ -471,5 +469,3 @@ function TOOL.BuildCPanel(CPanel)
 	d:SetTall(ScrH())
 
 end
-
---easylua.EndTool()

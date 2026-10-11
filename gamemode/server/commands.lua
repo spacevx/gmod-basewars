@@ -8,6 +8,33 @@ else
 	BaseWars.Commands.Pattern = "[!|/|%.]"
 end
 
+--- @TODO: cleanier way for this
+local function FindPlayer(identifier)
+	if not identifier or identifier == "" then return nil end
+
+	identifier = string.lower(identifier)
+
+	for _, ply in ipairs(player.GetAll()) do
+		if string.lower(ply:Nick()) == identifier then
+			return ply
+		end
+	end
+
+	for _, ply in ipairs(player.GetAll()) do
+		if string.find(string.lower(ply:Nick()), identifier, 1, true) then
+			return ply
+		end
+	end
+
+	for _, ply in ipairs(player.GetAll()) do
+		if ply:SteamID() == identifier or ply:SteamID64() == identifier then
+			return ply
+		end
+	end
+
+	return nil
+end
+
 function BaseWars.Commands.ParseArgs(str, ply)
 	local ret 		= {}
 	local InString 	= false
@@ -57,17 +84,6 @@ function BaseWars.Commands.CallCommand(ply, cmd, line, args)
 		return
 	end
 
-	if easylua then
-		for _, v in ipairs(args) do
-			if v[1] == "#" and v ~= "#me" and ply and not ply:IsAdmin() then
-				ply:EmitSound("buttons/button8.wav")
-				ply:SendLua(string.format([[local s = "%s" notification.AddLegacy(s, 1, 4)]], "LOUDNO!!!"))
-
-				return
-			end
-		end
-	end
-
 	BaseWars.UTIL.Log("COMMAND: ", ply, " -> ", cmd, "[", line, "]")
 
 	local ok, msg = pcall(function()
@@ -75,9 +91,7 @@ function BaseWars.Commands.CallCommand(ply, cmd, line, args)
 
 		cmd = BaseWars.Commands.cmds[cmd]
 		if allowed ~= false then
-			if easylua then easylua.Start(ply) end
-				allowed, reason = cmd.CallBack(ply, line, unpack(args))
-			if easylua then easylua.End() end
+			allowed, reason = cmd.CallBack(ply, line, unpack(args))
 		end
 
 		if ply:IsValid() then
@@ -190,11 +204,9 @@ local _cmdtbl = {"dm", "tell", "msg"}
 if not aowl then _cmdtbl[#_cmdtbl + 1] = "pm" end
 
 BaseWars.Commands.AddCommand(_cmdtbl, function(ply, line, who)
-	if not easylua then return false, "easylua is required for this command, tell your dev to change how it works or install easylua" end
-
 	if not who then return false, BaseWars.LANG.InvalidPlayer end
 
-	local Targ = easylua.FindEntity(who)
+	local Targ = FindPlayer(who)
 
 	if not BaseWars.Ents:ValidPlayer(Targ) then return false, BaseWars.LANG.InvalidPlayer end
 
@@ -293,83 +305,79 @@ BaseWars.Commands.AddCommand("discord", function(ply)
 end, false)
 
 
-BaseWars.Commands.AddCommand({"givemoney", "pay", "moneygive"}, function(caller, line, ply, amount)
-	return false, "/pay has been removed since it was only ever used for abuse and stoping abuse made the command borderline useless."
-	--[[if not easylua then return false, "easylua is required for this command, tell your dev to change how it works or install easylua" end
+-- @TODO: make this command opt
+-- BaseWars.Commands.AddCommand({"givemoney", "pay", "moneygive"}, function(caller, line, ply, amount)
+-- 	return false, "/pay has been removed since it was only ever used for abuse and stoping abuse made the command borderline useless."
 
-	if not amount then return false, BaseWars.LANG.InvalidAmount end
+-- 	if not amount then return false, BaseWars.LANG.InvalidAmount end
 
-	amount, ply = amount:Trim(), ply and ply:Trim() or ""
+-- 	amount, ply = amount:Trim(), ply and ply:Trim() or ""
 
-	if ply and isnumber(tonumber(ply)) then
-		local amt, tar = ply, amount
+-- 	if ply and isnumber(tonumber(ply)) then
+-- 		local amt, tar = ply, amount
 
-		amount 	= amt
-		ply 	= tar
-	end
+-- 		amount 	= amt
+-- 		ply 	= tar
+-- 	end
 
-	if amount:lower():Trim():match("nan") then return false, BaseWars.LANG.NaNResult end
+-- 	if amount:lower():Trim():match("nan") then return false, BaseWars.LANG.NaNResult end
 
-	amount = tonumber(amount) or 0
-	if not isnumber(amount) or amount <= 0 and not caller:IsAdmin() then
-		amount = 0
-	elseif amount > 10^4 then
-		return false, string.format(BaseWars.LANG.MaximumPay, BaseWars.NumberFormat(BaseWars.Config.MaximumPay))
-    end
+-- 	amount = tonumber(amount) or 0
+-- 	if not isnumber(amount) or amount <= 0 and not caller:IsAdmin() then
+-- 		amount = 0
+-- 	elseif amount > 10^4 then
+-- 		return false, string.format(BaseWars.LANG.MaximumPay, BaseWars.NumberFormat(BaseWars.Config.MaximumPay))
+--     end
 
-    if caller.pleasestop and caller.pleasestop > CurTime() then return false, string.format(BaseWars.LANG.PayRateLimit, math.floor(caller.pleasestop - CurTime())) end
+--     if caller.pleasestop and caller.pleasestop > CurTime() then return false, string.format(BaseWars.LANG.PayRateLimit, math.floor(caller.pleasestop - CurTime())) end
 
-	if amount > 0 and caller:GetMoney() < amount then return false, BaseWars.LANG.TooPoor end
-	if amount < 1 then return false, BaseWars.LANG.MinimumPay end
+-- 	if amount > 0 and caller:GetMoney() < amount then return false, BaseWars.LANG.TooPoor end
+-- 	if amount < 1 then return false, BaseWars.LANG.MinimumPay end
 
-	if ply ~= "" and ply ~= nil then
-		ply = easylua.FindEntity(ply)
-	else return false, BaseWars.LANG.InvalidPlayer end
+-- 	if ply ~= "" and ply ~= nil then
+-- 		ply = FindPlayer(ply)
+-- 	else return false, BaseWars.LANG.InvalidPlayer end
 
-	if not BaseWars.Ents:ValidPlayer(ply) then return false, BaseWars.LANG.InvalidPlayer end
+-- 	if not BaseWars.Ents:ValidPlayer(ply) then return false, BaseWars.LANG.InvalidPlayer end
 
-	caller:TakeMoney(amount)
-	ply:GiveMoney(amount)
+-- 	caller:TakeMoney(amount)
+-- 	ply:GiveMoney(amount)
 
-	hook.Run("BaseWars_GiveMoney", caller, ply, amount)
+-- 	hook.Run("BaseWars_GiveMoney", caller, ply, amount)
 
-	local Given = string.format(BaseWars.LANG.GivenMoney, caller:Nick(), BaseWars.NumberFormat(amount))
-	local Gave = string.format(BaseWars.LANG.GaveMoney, ply:Nick(), BaseWars.NumberFormat(amount))
+-- 	local Given = string.format(BaseWars.LANG.GivenMoney, caller:Nick(), BaseWars.NumberFormat(amount))
+-- 	local Gave = string.format(BaseWars.LANG.GaveMoney, ply:Nick(), BaseWars.NumberFormat(amount))
 
-	caller:ChatPrint(Gave)
-	ply:ChatPrint(Given)
+-- 	caller:ChatPrint(Gave)
+-- 	ply:ChatPrint(Given)
 
-    caller.pleasestop = CurTime() + 3]]
-end, false)
+--     caller.pleasestop = CurTime() + 3]]
+-- end, false)
 
-BaseWars.Commands.AddCommand({"dropmoney"}, function(ply)
-	ply:Notify(BaseWars.LANG.Use .. " /pay", BASEWARS_NOTIFICATION_GENRL)
-end, false)
+--- @TODO: Make this command opt
+-- BaseWars.Commands.AddCommand({"bounty", "place", "placebounty"}, function(ply, line, who, amount)
+-- 	if not who then return false, BaseWars.LANG.InvalidPlayer end
+-- 	if not amount then return false, BaseWars.LANG.InvalidAmount end
 
-BaseWars.Commands.AddCommand({"bounty", "place", "placebounty"}, function(ply, line, who, amount)
-	if not easylua then return false, "easylua is required for this command, tell your dev to change how it works or install easylua" end
-	if not who then return false, BaseWars.LANG.InvalidPlayer end
-	if not amount then return false, BaseWars.LANG.InvalidAmount end
+-- 	local Targ = FindPlayer(who)
+-- 	if not BaseWars.Ents:ValidPlayer(Targ) then return false, BaseWars.LANG.InvalidPlayer end
 
-	local Targ = easylua.FindEntity(who)
-	if not BaseWars.Ents:ValidPlayer(Targ) then return false, BaseWars.LANG.InvalidPlayer end
+-- 	if ply.pleasestop and ply.pleasestop > CurTime() then return false, string.format(BaseWars.LANG.PayRateLimit, math.floor(ply.pleasestop - CurTime())) end
 
-	if ply.pleasestop and ply.pleasestop > CurTime() then return false, string.format(BaseWars.LANG.PayRateLimit, math.floor(ply.pleasestop - CurTime())) end
+-- 	amount = amount:lower():Trim()
+-- 	if amount:match("nan") then return false, BaseWars.LANG.NaNResult end
+-- 	amount = tonumber(amount) or 0
 
-	amount = amount:lower():Trim()
-	if amount:match("nan") then return false, BaseWars.LANG.NaNResult end
-	amount = tonumber(amount) or 0
+-- 	if not isnumber(amount) or amount < 1 then
+-- 		return false, BaseWars.LANG.MinimumPay
+-- 	elseif amount > 10^9 then
+-- 		return false, string.format(BaseWars.LANG.MaximumPay, BaseWars.NumberFormat(10^9))
+-- 	end
 
-	if not isnumber(amount) or amount < 1 then
-		return false, BaseWars.LANG.MinimumPay
-	elseif amount > 10^9 then
-		return false, string.format(BaseWars.LANG.MaximumPay, BaseWars.NumberFormat(10^9))
-	end
+-- 	local result, error = Targ:PlaceBounty( ply, amount )
+-- 	if not result and error then
+-- 		return result, error
+-- 	end
 
-	local result, error = Targ:PlaceBounty( ply, amount )
-	if not result and error then
-		return result, error
-	end
-
-	ply.pleasestop = CurTime() + 300
-end, false)
+-- 	ply.pleasestop = CurTime() + 300
+-- end, false)
