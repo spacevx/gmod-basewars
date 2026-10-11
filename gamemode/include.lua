@@ -51,6 +51,7 @@ do
 end
 
 do
+	LoadFileCS("client/cl_textscreen_config.lua")
 	LoadFileCS("client/cl_bwmenu.lua")
 	LoadFileCS("client/cl_npcmenu.lua")
 	LoadFileCS("client/cl_druglab.lua")

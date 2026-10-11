@@ -428,7 +428,6 @@ function GM:InitPostEntity()
 	end
 
 	BaseWars.MySQL.Connect()
-	BaseWars.UTIL.WriteCrashRollback(true)
 end
 
 function GM:PlayerSpawn(ply)

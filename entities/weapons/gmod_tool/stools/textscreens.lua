@@ -6,8 +6,10 @@ if SERVER then
 	util.AddNetworkString("textscreens_upload")
 	net.Receive("textscreens_upload", function(_,ply)
 		local l = net.ReadUInt(32)
-		local d = net.ReadData(l)
+		if l > 16000 then return end
+		local d = l > 0 and net.ReadData(l) or ""
 		ply["__textscreens"] = d
+		BaseWars.MySQL.SaveTextscreenConfig(ply, d)
 	end)
 end
 
@@ -80,11 +82,11 @@ end
 function TOOL:LeftClick(tr)
 
 	if CLIENT then
-
-		local data = file.Read("basewars/textscreen_conf.txt")
+		if not BaseWars.TextscreenConfigLoaded then return false end
+		local data = BaseWars.TextscreenConfig or ""
 		net.Start("textscreens_upload")
 		net.WriteUInt(#data, 32)
-		net.WriteData(data, #data)
+		if #data > 0 then net.WriteData(data, #data) end
 		net.SendToServer()
 
 	return true end
@@ -156,11 +158,10 @@ if CLIENT then
 
 local PANEL = {}
 
-file.CreateDir("basewars")
-
 function PANEL:Init()
 
 	self.TextBoxes = {}
+	BaseWars.TextscreenPanel = self
 
 	self.AddButton = vgui.Create("DImageButton", self)
 	self.AddButton:SetImage("icon16/add.png")
@@ -383,16 +384,15 @@ function PANEL:AddTextBox(text, col, size)
 end
 
 function PANEL:LoadFromConfig()
-
-	local conf = file.Read("basewars/textscreen_conf.txt")
+	local conf = BaseWars.TextscreenConfig
 	if not conf then return end
 	if conf:Trim() == "" then return end
 
-	for i, line in pairs(conf:Split("\n")) do
+	for i, line in ipairs(conf:Split("\n")) do
 
-		local col, font, text = line:match("\2(.-)\11\3(.-)\11(.+)")
+		local font, col, text = line:match("^\3(.-)\11\2(.-)\11(.*)$")
 		if not col then return end
-		local r,g,b,a = col:match("(.-) (.-) (.-) (.+)")
+		local r,g,b,a = col:match("(.-)\1(.-)\1(.-)\1(.+)")
 		col = Color(tonumber(r),tonumber(g),tonumber(b),tonumber(a))
 		font = tonumber(font)
 
@@ -403,6 +403,7 @@ function PANEL:LoadFromConfig()
 end
 
 function PANEL:Think()
+	if not BaseWars.TextscreenConfigLoaded then return end
 
 	local lastconfig = self.__configstring
 
@@ -418,7 +419,14 @@ function PANEL:Think()
 
 	if lastconfig ~= new then
 		self.__configstring = new
-		file.Write("basewars/textscreen_conf.txt", new)
+		BaseWars.TextscreenConfig = new
+		timer.Create("BaseWars.TextscreenConfigSave", 1, 1, function()
+			local data = BaseWars.TextscreenConfig or ""
+			net.Start("textscreens_upload")
+			net.WriteUInt(#data, 32)
+			if #data > 0 then net.WriteData(data, #data) end
+			net.SendToServer()
+		end)
 	end
 
 end

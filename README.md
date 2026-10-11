@@ -18,23 +18,20 @@ BaseWars is a gamemode all about printing and raiding. Build your own base to pr
 
 ## Installation
 
-The gamemode's default config uses Customizable Weaponry 2.0, you can install the needed packs from here:
-
-[part 1](https://steamcommunity.com/sharedfiles/filedetails/?id=349050451)
-
-[part 2](https://steamcommunity.com/sharedfiles/filedetails/?id=358608166)
-
-[part 3](https://steamcommunity.com/sharedfiles/filedetails/?id=359830105)
-
-Or, if you want, just edit the config to use other weapons!
-
 ### Prerequisites
 * A CPPI compliant prop-protection addon.
 * A fading door addon.
+* [Goobie-sql](https://github.com/Srlion/goobie-sql).
 
 ### Installing the gamemode
 * Drag the folder into ```garrysmod/gamemodes```.
 * Edit ```garrysmod/gamemodes/basewars/gamemode/config.lua``` to your own liking.
+* Download `goobie-sql.lua` from the [goobie-sql releases](https://github.com/Srlion/goobie-sql/releases) into `gamemode/server/thirdparty/goobie-sql.lua`. Install its matching `gmsv_goobie_mysql` binary in `garrysmod/lua/bin`.
+* Set the host, port, user, password and database in `gamemode/server/mysql.lua`. The database must already exist; BaseWars creates its own tables. Use an account with table creation and read/write permissions.
+
+Player data and crash refunds use MySQL only. BaseWars creates the tables in an empty database at startup.
+
+Textscreen editor settings are saved in MySQL. Steam emoticon image downloads in the custom chat are disabled because they required writing client cache files.
 
 ## Screenshots
 

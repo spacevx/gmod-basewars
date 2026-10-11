@@ -40,36 +40,6 @@ for _, i in pairs(file.Find("materials/icon16/*.png", "GAME")) do
 	ChatHUD.shortcuts[i:match("(.+).png")] = "<texture=icon16/" .. i .. ">"
 end
 
-function ChatHUD.CreateSteamShortcuts(update)
-	local tag = os.date("%Y%m%d")
-	local latest = "steam_emotes_"..tag..".dat"
-
-	local found = file.Find("emoticon_cache/steam_emotes_*.dat", "DATA")
-	for k, v in next,found do
-		if v ~= latest then file.Delete("emoticon_cache/" .. v) end
-	end
-
-	latest = "emoticon_cache/" .. latest
-
-	if file.Exists(latest, "DATA") and not update then
-		local data = file.Read(latest, "DATA")
-
-		for name in data:gmatch('"name": ":(.-):"') do
-			if not ChatHUD.shortcuts[name] then ChatHUD.shortcuts[name] = "<se=" .. name .. ">" end
-		end
-	else
-		http.Fetch("http://cdn.steam.tools/data/emote.json", function(b)
-			for name in b:gmatch('"name": ":(.-):"') do
-				if not ChatHUD.shortcuts[name] then ChatHUD.shortcuts[name] = "<se=" .. name .. ">" end
-			end
-
-			file.Write(latest, b)
-		end)
-	end
-end
-
-ChatHUD.CreateSteamShortcuts()
-
 Chat = {}
 
 Chat.markups = {}

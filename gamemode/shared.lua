@@ -269,70 +269,21 @@ function BaseWars.UTIL.RefundAll(ply, ret)
 	return RetTbl
 end
 
-function BaseWars.UTIL.WriteCrashRollback(recover)
-	if recover then
-		if file.Exists("server_crashed.dat", "DATA") then
-			BaseWars.UTIL.Log("Server crash detected, converting data rollbacks into refund files!")
-		else
-			return
-		end
-
-		local Files = file.Find("basewars_crashrollback/*_save.txt", "DATA")
-
-		for k, v in next, Files do
-			local FileName = v:gsub("_save.txt", "")
-			local FileData = file.Read("basewars_crashrollback/" .. v, "DATA")
-
-			file.Write("basewars_crashrollback/" .. FileName .. "_load.txt", FileData)
-		end
-	return end
-
-	local RefundTable = BaseWars.UTIL.RefundAll(nil, true)
-
-	for k, v in next, RefundTable do
-		if not file.IsDir("basewars_crashrollback", "DATA") then file.CreateDir("basewars_crashrollback") end
-
-		file.Write("basewars_crashrollback/" .. tostring(k) .. "_save.txt", v)
-	end
-
-	file.Write("server_crashed.dat", "")
+function BaseWars.UTIL.WriteCrashRollback()
+	BaseWars.MySQL.SaveCrashRefunds(BaseWars.UTIL.RefundAll(nil, true))
 end
 
 function BaseWars.UTIL.RefundFromCrash(ply)
-	local UID = ply:SteamID64()
-	local FileName = "basewars_crashrollback/" .. UID .. "_load.txt"
-
-	if file.Exists(FileName, "DATA") then
-		local Money = file.Read(FileName, "DATA")
-		Money = tonumber(Money)
-
-		ply:ChatPrint(BaseWars.LANG.WelcomeBackCrash)
-		ply:ChatPrint(string.format(BaseWars.LANG.Refunded, BaseWars.NumberFormat(Money)))
-
-		BaseWars.UTIL.Log("Refunding ", ply, " for server crash previously.")
-		ply:GiveMoney(Money)
-
-		file.Delete(FileName)
-	end
+	BaseWars.MySQL.RefundFromCrash(ply)
 end
 
 function BaseWars.UTIL.ClearRollbackFile(ply)
-	local UID = ply:SteamID64()
-	local FileName = "basewars_crashrollback/" .. UID .. "_save.txt"
-
-	if file.Exists(FileName, "DATA") then file.Delete(FileName) end
+	BaseWars.MySQL.ClearCrashRefund(ply)
 end
 
 function BaseWars.UTIL.SafeShutDown()
 	BaseWars.UTIL.RefundAll()
-
-	local Files = file.Find("basewars_crashrollback/*_save.txt", "DATA")
-
-	for k, v in next, Files do
-		file.Delete("basewars_crashrollback/" .. v)
-	end
-
-	file.Delete("server_crashed.dat")
+	BaseWars.MySQL.ClearAllCrashRefunds()
 end
 
 function BaseWars.UTIL.FreezeAll()
@@ -344,30 +295,6 @@ function BaseWars.UTIL.FreezeAll()
 
 		Phys:EnableMotion(false)
 	end
-end
-
-function BaseWars.UTIL.GetPre122Data(ply)
-	local path = IsValid(ply) and ply:SteamID64() or ply
-	if not path then return end
-
-	return {
-		money	= tonumber(file.Read("basewars_money/" .. path .. "/money.txt", "DATA") or "") or 0,
-		karma	= tonumber(file.Read("basewars_karma/" .. path .. "/karma.txt", "DATA") or "") or 0,
-		level	= tonumber(file.Read("basewars_playerlevel/" .. path .. "/level.txt", "DATA") or "") or 0,
-		xp		= tonumber(file.Read("basewars_playerlevel/" .. path .. "/xp.txt", "DATA") or "") or 0,
-		time	= tonumber(file.Read("basewars_time/" .. path .. "/time.txt", "DATA") or "") or 0,
-	}
-end
-
-function BaseWars.UTIL.RevertPlayerData(ply)
-	local old_data = BaseWars.UTIL.GetPre122Data(ply)
-	if not old_data then return end
-
-	ply:SetMoney(old_data.money)
-	ply:SetKarma(old_data.karma)
-	ply:SetLevel(old_data.level)
-	ply:SetXP(old_data.xp)
-	PlayTime:SetGlobalTimeFile(ply, old_data.time)
 end
 
 function BaseWars.NumberFormat(num)

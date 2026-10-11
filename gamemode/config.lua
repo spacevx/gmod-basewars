@@ -4,7 +4,7 @@
 -- README_SF.md for hooks and methods
 -- gamemode/server/hooks.lua for XP and karma logic, along with some examples of how to use hooks
 -- gamemode/server/commands.lua for chat commands
--- gamemode/server/mysql.lua for MySQL configuration, do not turn this on unless you know what you are doing!
+-- gamemode/server/mysql.lua for the required MySQL connection.
 
 -- The language the gamemode will run with, right now the built in languages are:
 --ENGLISH
