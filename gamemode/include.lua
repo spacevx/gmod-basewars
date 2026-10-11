@@ -40,6 +40,7 @@ do
 		IncludeCS("shared/hostnamefix.lua")
 	end
 	IncludeCS("integration/admin_menus.lua")
+	IncludeSV("integration/gprotect/sv_gprotect.lua")
 end
 
 do

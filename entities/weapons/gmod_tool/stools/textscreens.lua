@@ -86,7 +86,7 @@ function TOOL:LeftClick(tr)
 		lines = lines:Split("\n")
 		if #lines == 0 then screen:Remove() return false end
 		if lines[1]:Trim() == "" then screen:Remove() return false end
-		if hitEnt:IsValid() and hitEnt:GetClass() == "bw_textscreen" and hitEnt:CPPIGetOwner() == ply then
+		if hitEnt:IsValid() and hitEnt:GetClass() == "bw_textscreen" and BaseWars.CPPI.GetOwner(hitEnt) == ply then
 			hitEnt:NetworkData(tx)
 		return end
 		if screen:IsValid() then
@@ -101,7 +101,7 @@ function TOOL:RightClick(tr)
 	if not tr.Hit then return false end
 	local hitEnt = tr.Entity
 	local ply = self:GetOwner()
-	if hitEnt:IsValid() and hitEnt:GetClass() == "bw_textscreen" and hitEnt:CPPIGetOwner() == ply then
+	if hitEnt:IsValid() and hitEnt:GetClass() == "bw_textscreen" and BaseWars.CPPI.GetOwner(hitEnt) == ply then
 		hitEnt:Remove()
 		return true
 	end

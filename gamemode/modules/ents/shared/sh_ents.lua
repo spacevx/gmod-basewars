@@ -9,7 +9,7 @@ function MODULE:Valid(ent)
 end
 
 function MODULE:ValidOwner(ent)
-	local Owner = ent and (ent.CPPIGetOwner and ent:CPPIGetOwner())
+	local Owner = BaseWars.CPPI.GetOwner(ent)
 	return self:ValidPlayer(Owner)
 end
 

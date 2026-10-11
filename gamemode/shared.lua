@@ -114,22 +114,30 @@ BASEWARS_NOTIFICATION_DRUG	= Color(0, 255, 255, 255)
 
 function GM:PlayerIsRaidable(ply)
 	if BaseWars.Config.Raid.NeededPrinters < 1 then return end
-	local Ents = ents.GetAll()
 	local Raids = 0
-	for k, v in ipairs(Ents) do
-		local Owner = v:CPPIGetOwner()
-		if not BaseWars.Ents:ValidPlayer(Owner) or Owner ~= ply then continue end
-		local Raidable = v.IsValidRaidable
-		if Raidable then Raids = Raids + 1 end
-	end
+	BaseWars.CPPI.ForEachOwned(ply, function(ent)
+		if not ent.IsValidRaidable then return end
+		Raids = Raids + 1
+		if Raids >= BaseWars.Config.Raid.NeededPrinters then return false end
+	end)
 	if Raids >= BaseWars.Config.Raid.NeededPrinters then return true end
 	return false, BaseWars.LANG.NoPrinters
 end
 
 function BaseWars.GetRaidables(ply)
 	local list = {}
+	if SERVER and BaseWars.CPPI.HasIndexedOwners() then
+		local members = ply:InFaction() and ply:FactionMembers() or {ply}
+		for _, member in pairs(members) do
+			BaseWars.CPPI.ForEachOwned(member, function(ent, owner)
+				if ent:GetClass():sub(1, 3) ~= "bw_" then return end
+				list[#list + 1] = {e = ent, r = ent.IsValidRaidable or false, o = owner}
+			end)
+		end
+		return list
+	end
 	for k, v in ipairs(ents.FindByClass"bw_*") do
-		local own = v:CPPIGetOwner()
+		local own = BaseWars.CPPI.GetOwner(v)
 		if BaseWars.Ents:ValidPlayer(own) and (own == ply or (own:InFaction(ply:GetFaction()) and ply:InFaction())) then
 			list[#list+1] = {e = v, r = v.IsValidRaidable or false, o = own}
 		end
@@ -203,7 +211,7 @@ local function BlockInteraction(ply, ent, ret)
 		local class = ent:GetClass()
 		if class:find("_door") or class:find("func_") then return false end
 		if Classes[class] then return false end
-		local Owner = ent.CPPIGetOwner and ent:CPPIGetOwner()
+		local Owner = BaseWars.CPPI.GetOwner(ent)
 		if BaseWars.Ents:ValidPlayer(ply) and ply:InRaid() then return false end
 		if BaseWars.Ents:ValidPlayer(Owner) and Owner:InRaid() then return false end
 	elseif ply:InRaid() then

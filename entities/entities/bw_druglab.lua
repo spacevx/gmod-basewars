@@ -48,7 +48,7 @@ function ENT:SpawnDrug( drug )
         Ent:SetAngles(self:GetAngles())
     Ent:Spawn()
     Ent:Activate()
-		if IsValid(Owner) then Ent:CPPISetOwner(Owner) end
+		if IsValid(Owner) then BaseWars.CPPI.SetOwner(Ent, Owner) end
 end
 
 function ENT:ThinkFunc()

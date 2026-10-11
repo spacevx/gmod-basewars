@@ -49,7 +49,7 @@ end
 function ENT:SpawnFunction(ply, tr, class)
 	local pos = ply:GetPos() + Vector(0,0,8)
 	local ent = ents.Create(class)
-		ent:CPPISetOwner(ply)
+		BaseWars.CPPI.SetOwner(ent, ply)
 		ent:SetPos(pos)
 		ply:SetPos(pos + Vector(0,0,3))
 	ent:Spawn()

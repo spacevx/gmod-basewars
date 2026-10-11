@@ -33,13 +33,13 @@ function ENT:ThinkFunc()
 	self.money = self.money and math.floor(self.money * (1 + self.InterestRate)) or 0
 	local Ents = ents.FindInSphere(self:GetPos(), self.Radius)
 	self:EmitSound(self.Sound, 100, 60)
-	local owner = self:CPPIGetOwner()
+	local owner = BaseWars.CPPI.GetOwner(self)
 	if not IsValid(owner) then return end
 	for _, v in ipairs(Ents) do
 		if not BaseWars.Ents:Valid(v) then continue end
 		if v:IsPlayer() then continue end
 		if not v.TakeMoney then continue end
-		if v:CPPIGetOwner() ~= owner then continue end
+		if BaseWars.CPPI.GetOwner(v) ~= owner then continue end
 		self:TakeMoneyFrom(v)
 	end
 	self.CurrentValue = self.money

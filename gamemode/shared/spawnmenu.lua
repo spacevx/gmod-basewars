@@ -130,7 +130,7 @@ if SERVER then
 				Ent:SetAngles(SpawnAng)
 			Ent:Spawn()
 			Ent:Activate()
-			Ent:CPPISetOwner(ply)
+			BaseWars.CPPI.SetOwner(Ent, ply)
 			if lim then
 				LimitDeduct(Ent, ent, ply)
 			end
@@ -147,7 +147,7 @@ if SERVER then
 				Ent:SetAngles(SpawnAng)
 			Ent:Spawn()
 			Ent:Activate()
-			Ent:CPPISetOwner(ply)
+			BaseWars.CPPI.SetOwner(Ent, ply)
 			if lim then
 				LimitDeduct(Ent, ent, ply)
 			end
@@ -218,9 +218,7 @@ if SERVER then
 		undo.AddEntity(prop)
 		undo.SetPlayer(ply)
 		undo.Finish()
-		if prop.CPPISetOwner then
-			prop:CPPISetOwner(ply)
-		end
+		BaseWars.CPPI.SetOwner(prop, ply)
 		if ent then
 			hook.Run("BaseWars_PlayerBuyEntity", ply, prop) -- Player, Entity
 		else

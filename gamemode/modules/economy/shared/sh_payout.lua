@@ -46,18 +46,15 @@ function Economy:RefundAll(ply, ret)
 			RetTbl[v:SteamID64()] = 0
 		end
 	end
-	for k, v in next, ents.GetAll() do
-		if not BaseWars.Ents:Valid(v) then continue end
-		local Owner = BaseWars.Ents:ValidOwner(v)
-		if not Owner or (ply and ply ~= Owner) then continue end
-		if not v.CurrentValue then continue end
+	BaseWars.CPPI.ForEachOwned(ply, function(v, Owner)
+		if not v.CurrentValue then return end
 		if not ret then
 			self:PayOut(v, Owner, true, ret)
 			v:Remove()
 		else
 			RetTbl[Owner:SteamID64()] = RetTbl[Owner:SteamID64()] + self:PayOut(v, Owner, true, ret)
 		end
-	end
+	end)
 	return RetTbl
 end
 

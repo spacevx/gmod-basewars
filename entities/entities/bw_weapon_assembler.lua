@@ -597,7 +597,7 @@ function ENT:ThinkFunc()
 end
 
 function ENT:UseFunc(user)
-	if user ~= self:CPPIGetOwner() then return end
+	if user ~= BaseWars.CPPI.GetOwner(self) then return end
 	net.Start("bw_weapon_assembler")
 		net.WriteEntity(self)
 	net.Send(user)
@@ -608,7 +608,7 @@ local sqr_dist = 256 * 256 -- big but who cares
 local function receiveRequest(_, ply)
 	local ent = net.ReadEntity()
 	local class = net.ReadString()
-	if not IsValid(ent) or ent:CPPIGetOwner() ~= ply or not ent.SetSelectedClass or ply:GetPos():DistToSqr(ent:GetPos()) > sqr_dist then
+	if not IsValid(ent) or BaseWars.CPPI.GetOwner(ent) ~= ply or not ent.SetSelectedClass or ply:GetPos():DistToSqr(ent:GetPos()) > sqr_dist then
 		print("assembler received suspicious/broken request, denied: ", ply, ent, class)
 		return
 	end

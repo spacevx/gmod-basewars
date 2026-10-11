@@ -17,12 +17,13 @@ ENT.PoisonDuration  = 13
 
 function ENT:customTest(v)
 	if not v:IsPlayer() then return false end
-	local owner = self:CPPIGetOwner()
-	if (owner:IsPlayer() and owner:IsEnemy(v)) then return true end
+	local owner = BaseWars.CPPI.GetOwner(self)
+	if IsValid(owner) and owner:IsPlayer() and owner:IsEnemy(v) then return true end
 	return false
 end
 
 function ENT:hitTarget(target)
-	target:ApplyDrug("Poison", self.PoisonDuration, self:CPPIGetOwner(), self:CPPIGetOwner())
+	local owner = BaseWars.CPPI.GetOwner(self)
+	target:ApplyDrug("Poison", self.PoisonDuration, owner, owner)
 	target:EmitSound("ambient/water/water_splash3.wav", 75, 120, 0.5)
 end

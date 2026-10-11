@@ -27,7 +27,7 @@ ENT.ScanDelay   = 1 / 2
 function ENT:customTest(v)
 	if not IsValid( v ) then return false end
 	if not (v:GetMaxHealth() > 0 and v:Health() < v:GetMaxHealth()) then return false end
-	local owner = self:CPPIGetOwner()
+	local owner = BaseWars.CPPI.GetOwner(self)
 	if IsValid( owner ) and IsValid( v ) and owner:IsPlayer() and v:IsPlayer() and owner:IsEnemy(v) then return false end
 	return true
 end

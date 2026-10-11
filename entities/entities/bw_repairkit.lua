@@ -11,7 +11,7 @@ if CLIENT then return end
 function ENT:SpawnFunction(ply, tr, class)
 	local pos = ply:GetPos()
 	local ent = ents.Create(class)
-		ent:CPPISetOwner(ply)
+		BaseWars.CPPI.SetOwner(ent, ply)
 		ent:SetPos(pos + ply:GetForward() * 32)
 	ent:Spawn()
 	ent:Activate()

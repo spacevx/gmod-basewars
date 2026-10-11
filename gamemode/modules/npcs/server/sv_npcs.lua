@@ -20,7 +20,7 @@ function MODULE:CreateNPCs()
 			Ent:SetAngles(v.Ang)
 		Ent:Spawn()
 		Ent:Activate()
-		Ent:CPPISetOwner(game.GetWorld())
+		BaseWars.CPPI.SetOwner(Ent, game.GetWorld())
 	end
 end
 hook.Add("InitPostEntity", tag .. ".CreateNPCs", Curry(MODULE.CreateNPCs))

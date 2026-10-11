@@ -142,7 +142,7 @@ BaseWars.Commands.AddCommand({"upg", "upgrade", "upgr"}, function(ply, line, lev
 	local trace = ply:GetEyeTrace()
 	local Ent = trace.Entity
 	if not Upgradable(ply, Ent) then return false end
-	if (Ent.CPPIGetOwner and Ent:CPPIGetOwner() ~= ply) then return false end -- no
+	if BaseWars.CPPI.GetOwner(Ent) ~= ply then return false end
 	local up = tonumber(level)
 	if up and up > 1 and up < 1024 then
 		for i = 1, up do
@@ -158,7 +158,7 @@ BaseWars.Commands.AddCommand({"maxupg", "max", "maxupgr", "maxupgrade"}, functio
 	local trace = ply:GetEyeTrace()
 	local Ent = trace.Entity
 	if not Upgradable(ply, Ent) then return false end
-	if (Ent.CPPIGetOwner and Ent:CPPIGetOwner() ~= ply) then return false end -- no
+	if BaseWars.CPPI.GetOwner(Ent) ~= ply then return false end
 	for i = 1, (Ent.MaxLevel or 1024) do
 		local r = Ent:Upgrade(ply, true)
 		if r == false then break end

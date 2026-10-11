@@ -39,12 +39,11 @@ end
 function GM:PlayerInitialSpawn(ply)
 	self.BaseClass.PlayerInitialSpawn(self, ply)
 	BaseWars.MySQL.FullInitPlayer(ply)
-	for k, v in next, ents.GetAll() do
-		local Owner = BaseWars.Ents:ValidOwner(v)
-		local Class = v:GetClass()
-		if Owner ~= ply or not Class:find("bw_") then continue end
-		ply:GetTable()["limit_" .. Class] = (ply:GetTable()["limit_" .. Class] or 0) + 1
-	end
+	BaseWars.CPPI.ForEachOwned(ply, function(ent)
+		local class = ent:GetClass()
+		if not class:find("bw_") then return end
+		ply:GetTable()["limit_" .. class] = (ply:GetTable()["limit_" .. class] or 0) + 1
+	end)
 	timer.Simple(0, function()
 		if not IsValid(ply) then return end
 		ply:SetTeam(1)
@@ -333,7 +332,7 @@ function GM:Think()
 				if v.BeingRemoved or v.NoFizz then
 					continue
 				end
-				local Owner = v:CPPIGetOwner()
+				local Owner = BaseWars.CPPI.GetOwner(v)
 				if not Owner or not IsValid(Owner) or not Owner:IsPlayer() or (BaseWars.Config.SpawnBuilding == 1 and Owner:IsAdmin()) then
 					continue
 				end

@@ -17,8 +17,8 @@ ENT.FreezeTime   = 5
 
 function ENT:customTest(v)
 	if not v:IsPlayer() then return false end
-	local owner = self:CPPIGetOwner()
-	if (owner:IsPlayer() and owner:IsEnemy(v)) then return true end
+	local owner = BaseWars.CPPI.GetOwner(self)
+	if IsValid(owner) and owner:IsPlayer() and owner:IsEnemy(v) then return true end
 	return false
 end
 
